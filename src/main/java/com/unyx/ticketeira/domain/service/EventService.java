@@ -1,5 +1,7 @@
 package com.unyx.ticketeira.domain.service;
 
+import com.unyx.ticketeira.application.dto.event.EventResponse;
+import com.unyx.ticketeira.application.dto.ticket.TicketResponse;
 import com.unyx.ticketeira.domain.model.Event;
 import com.unyx.ticketeira.domain.model.Ticket;
 import com.unyx.ticketeira.domain.model.User;
@@ -34,6 +36,7 @@ public class EventService {
         // Associa o ticket ao evento
         ticket.setEvent(event);
         return ticketRepository.save(ticket);
+
     }
 
     public Event updateEvent(Long eventId, Event updatedEvent, User producer) {
@@ -68,5 +71,24 @@ public class EventService {
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
+    }
+
+    public Ticket updateTicket(Long ticketId, Ticket updatedTicket, User producer) {
+        // Busca o ticket pelo ID
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));
+
+        // Verifica se o producer autenticado é o criador do evento associado ao ticket
+        if (!ticket.getEvent().getProducer().getId().equals(producer.getId())) {
+            throw new UnauthorizedException("You are not authorized to update this ticket.");
+        }
+
+        // Atualiza os dados do ticket
+        ticket.setBatchName(updatedTicket.getBatchName());
+        ticket.setPrice(updatedTicket.getPrice());
+        ticket.setQuantity(updatedTicket.getQuantity());
+        ticket.setIsActive(updatedTicket.getIsActive());
+
+        return ticketRepository.save(ticket);
     }
 }

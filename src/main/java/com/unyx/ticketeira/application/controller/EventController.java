@@ -29,7 +29,8 @@ public class EventController {
     public ResponseEntity<EventResponse> createEvent(
             @RequestBody @Valid EventRequest request,
             @AuthenticationPrincipal User producer) {
-
+        System.out.println("Requisição recebida para criar evento: " + request);
+        System.out.println("Usuário autenticado: " + producer);
         // Cria o objeto Event com os dados do request
         Event event = new Event();
         event.setTitle(request.getTitle());
@@ -85,7 +86,46 @@ public class EventController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/{eventId}/tickets")
+    @PutMapping("/{eventId}")
+    public ResponseEntity<EventResponse> updateEvent(
+            @PathVariable Long eventId,
+            @RequestBody @Valid EventRequest request,
+            @AuthenticationPrincipal User producer) {
+
+        // Cria o objeto Event com os dados do request
+        Event updatedEvent = new Event();
+        updatedEvent.setTitle(request.getTitle());
+        updatedEvent.setDescription(request.getDescription());
+        updatedEvent.setNameLocale(request.getNameLocale());
+        updatedEvent.setAddress(request.getAddress());
+        updatedEvent.setClassification(request.getClassification());
+        updatedEvent.setCategory(request.getCategory());
+        updatedEvent.setCoverImageUrl(request.getCoverImageUrl());
+        updatedEvent.setMainImageUrl(request.getMainImageUrl());
+        updatedEvent.setEventDateTime(request.getEventDateTime());
+
+        // Atualiza o evento no banco de dados
+        Event event = eventService.updateEvent(eventId, updatedEvent, producer);
+
+        // Cria a resposta
+        EventResponse response = new EventResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getNameLocale(),
+                event.getAddress(),
+                event.getClassification(),
+                event.getCategory(),
+                event.getCoverImageUrl(),
+                event.getMainImageUrl(),
+                event.getEventDateTime(),
+                event.getProducer().getEmail()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{eventId}/ticket")
     public ResponseEntity<TicketResponse> createTicket(
             @PathVariable Long eventId,
             @RequestBody @Valid TicketRequest request,
@@ -118,6 +158,48 @@ public class EventController {
                         createdTicket.getEvent().getMainImageUrl(),
                         createdTicket.getEvent().getEventDateTime(),
                         createdTicket.getEvent().getProducer().getEmail()
+                )
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{eventId}/ticket/{ticketId}")
+    public ResponseEntity<TicketResponse> updateTicket(
+            @PathVariable Long eventId,
+            @PathVariable Long ticketId,
+            @RequestBody @Valid TicketRequest request,
+            @AuthenticationPrincipal User producer) {
+
+        // Cria o objeto Ticket com os dados do request
+        Ticket updatedTicket = new Ticket();
+        updatedTicket.setBatchName(request.getBatchName());
+        updatedTicket.setPrice(request.getPrice());
+        updatedTicket.setQuantity(request.getQuantity());
+        updatedTicket.setIsActive(request.getIsActive());
+
+        // Atualiza o ticket no banco de dados
+        Ticket ticket = eventService.updateTicket(ticketId, updatedTicket, producer);
+
+        // Cria o TicketResponse
+        TicketResponse response = new TicketResponse(
+                ticket.getId(),
+                ticket.getBatchName(),
+                ticket.getPrice(),
+                ticket.getQuantity(),
+                ticket.getIsActive(),
+                new EventResponse(
+                        ticket.getEvent().getId(),
+                        ticket.getEvent().getTitle(),
+                        ticket.getEvent().getDescription(),
+                        ticket.getEvent().getNameLocale(),
+                        ticket.getEvent().getAddress(),
+                        ticket.getEvent().getClassification(),
+                        ticket.getEvent().getCategory(),
+                        ticket.getEvent().getCoverImageUrl(),
+                        ticket.getEvent().getMainImageUrl(),
+                        ticket.getEvent().getEventDateTime(),
+                        ticket.getEvent().getProducer().getEmail()
                 )
         );
 
