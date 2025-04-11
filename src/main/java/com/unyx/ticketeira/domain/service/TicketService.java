@@ -58,29 +58,29 @@ public class TicketService {
         return ticketPurchaseRepository.save(purchase);
     }
 
-    public void processSuccessfulPayment(String paymentIntentId, Long ticketId, Integer quantity, User buyer) {
-        // Busca o ticket pelo ID
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));
-
-        // Verifica se há tickets disponíveis
-        if (ticket.getQuantity() < quantity) {
-            throw new IllegalArgumentException("Not enough tickets available.");
-        }
-
-        // Atualiza a quantidade de tickets disponíveis
-        ticket.setQuantity(ticket.getQuantity() - quantity);
-        ticketRepository.save(ticket);
-
-        // Cria a compra
-        TicketPurchase purchase = new TicketPurchase();
-        purchase.setUser(buyer);
-        purchase.setTicket(ticket);
-        purchase.setQuantity(quantity);
-        purchase.setPurchaseDate(LocalDateTime.now());
-
-        ticketPurchaseRepository.save(purchase);
-
-        System.out.println("Compra processada com sucesso para o PaymentIntent: " + paymentIntentId);
-    }
+   // public void processSuccessfulPayment(String paymentIntentId, Long ticketId, Integer quantity, User buyer) {
+   //     // Busca o ticket pelo ID
+   //     Ticket ticket = ticketRepository.findById(ticketId)
+   //             .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));
+//
+   //     // Verifica se há tickets disponíveis
+   //     if (ticket.getQuantity() < quantity) {
+   //         throw new IllegalArgumentException("Not enough tickets available.");
+   //     }
+//
+   //     // Atualiza a quantidade de tickets disponíveis
+   //     ticket.setQuantity(ticket.getQuantity() - quantity);
+   //     ticketRepository.save(ticket);
+//
+   //     // Cria a compra
+   //     TicketPurchase purchase = new TicketPurchase();
+   //     purchase.setUser(buyer);
+   //     purchase.setTicket(ticket);
+   //     purchase.setQuantity(quantity);
+   //     purchase.setPurchaseDate(LocalDateTime.now());
+//
+   //     ticketPurchaseRepository.save(purchase);
+//
+   //     System.out.println("Compra processada com sucesso para o PaymentIntent: " + paymentIntentId);
+   // }
 }

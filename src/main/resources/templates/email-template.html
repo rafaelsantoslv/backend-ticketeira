@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Ingresso - Agência Unyx</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos base para compatibilidade com clientes de e-mail */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333333;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #000000;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid #FFC107;
+        }
+
+        .logo {
+            max-width: 180px;
+            height: auto;
+        }
+
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+            background-color: #FAFAFA;
+        }
+
+        .title {
+            font-family: 'Montserrat', 'Arial', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .accent {
+            color: #FFC107;
+        }
+
+        .ticket-container {
+            padding: 10px;
+            background: linear-gradient(135deg, #000000, #222222);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ticket-container:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FFC107, #FFD54F);
+        }
+
+        .ticket {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: -15px;
+            border-left: 2px dashed #E0E0E0;
+        }
+
+        .event-name {
+            font-family: 'Montserrat', 'Arial', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #FFC107;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .event-details {
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .detail-column {
+            flex: 0 0 48%;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #757575;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #000000;
+            font-size: 16px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #E0E0E0;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider:before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #000000;
+            border-radius: 50%;
+            top: -10px;
+            left: -30px;
+        }
+
+        .divider:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #000000;
+            border-radius: 50%;
+            top: -10px;
+            right: -30px;
+        }
+
+        .qr-section {
+            background-color: #F5F5F5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .qr-title {
+            font-family: 'Montserrat', 'Arial', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #000000;
+        }
+
+        .qr-code {
+            margin: 10px auto;
+            width: 150px;
+            height: 150px;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket-number {
+            font-family: 'Montserrat', 'Arial', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #424242;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            background-color: #FFF8E1;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 30px 0;
+            text-align: left;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #5D4037;
+            font-size: 14px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #FFC107;
+            color: #000000;
+            font-family: 'Montserrat', 'Arial', sans-serif;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .footer {
+            background-color: #212121;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #BDBDBD;
+            border-top: 3px solid #FFC107;
+        }
+
+        .social-icons {
+            margin: 15px 0;
+        }
+
+        .social-icon {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background-color: #333333;
+            border-radius: 50%;
+            margin: 0 5px;
+            text-align: center;
+            line-height: 32px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .footer-links {
+            margin: 15px 0;
+        }
+
+        .footer-link {
+            color: #FFC107;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .container {
+                width: 100% !important;
+            }
+
+            .content {
+                padding: 20px 15px !important;
+            }
+
+            .detail-column {
+                flex: 0 0 100%;
+            }
+
+            .event-name {
+                font-size: 22px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/agenciaUnyx-An6uTxn3uugyXIc2dwCe0BKbANgMYF.jpeg" alt="Agência Unyx" class="logo">
+    </div>
+
+    <div class="content">
+        <h1 class="title">Seu Ingresso está <span class="accent">Confirmado!</span></h1>
+
+        <div class="ticket-container">
+            <div class="ticket">
+                <div class="event-name">FESTIVAL DE VERÃO</div>
+
+                <div class="event-details">
+                    <div class="detail-column">
+                        <span class="detail-label">Data</span>
+                        <span class="detail-value">15 de Abril de 2025</span>
+                    </div>
+
+                    <div class="detail-column">
+                        <span class="detail-label">Horário</span>
+                        <span class="detail-value">20:00</span>
+                    </div>
+
+                    <div class="detail-column">
+                        <span class="detail-label">Local</span>
+                        <span class="detail-value">Arena Unyx</span>
+                    </div>
+
+                    <div class="detail-column">
+                        <span class="detail-label">Setor</span>
+                        <span class="detail-value">VIP GOLD</span>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="qr-section">
+                    <div class="qr-title">Apresente este QR Code na entrada do evento</div>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=UNYX-EVENT-12345&color=000000&bgcolor=FFFFFF" alt="QR Code do Ingresso" class="qr-code">
+                    <div class="ticket-number">Código: <strong>UNYX-EVENT-12345</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Importante:</strong> Chegue com pelo menos 30 minutos de antecedência. Apresente este ingresso impresso ou no seu dispositivo móvel junto com um documento com foto.</p>
+        </div>
+
+        <a href="#" class="cta-button">Adicionar ao Calendário</a>
+
+        <p>Obrigado por escolher a <strong>Agência Unyx</strong>!</p>
+        <p>Para mais informações, entre em contato conosco.</p>
+    </div>
+
+    <div class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-icon">f</a>
+            <a href="#" class="social-icon">i</a>
+            <a href="#" class="social-icon">t</a>
+        </div>
+
+        <div class="footer-links">
+            <a href="#" class="footer-link">Website</a>
+            <a href="#" class="footer-link">Contato</a>
+            <a href="#" class="footer-link">Política de Privacidade</a>
+        </div>
+
+        <p>&copy; 2025 Agência Unyx. Todos os direitos reservados.</p>
+        <p>Este e-mail foi enviado para você porque você comprou um ingresso para um evento da Agência Unyx.</p>
+    </div>
+</div>
+</body>
+</html>
