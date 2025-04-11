@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tab_event_ticket")
+@Table(name = "tab_ticket")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,7 @@ public class Ticket {
     private Integer quantity;
     private Boolean isActive;
 
+    @JoinColumn(name = "event_id", nullable = false)
     @ManyToOne
     private Event event;
 }

@@ -58,7 +58,7 @@ public class EventController {
                 createdEvent.getCoverImageUrl(),
                 createdEvent.getMainImageUrl(),
                 createdEvent.getEventDateTime(),
-                createdEvent.getProducer().getEmail()
+                createdEvent.getProducerId().getEmail()
         );
 
         return ResponseEntity.ok(response);
@@ -79,7 +79,7 @@ public class EventController {
                         event.getCoverImageUrl(),
                         event.getMainImageUrl(),
                         event.getEventDateTime(),
-                        event.getProducer().getEmail()
+                        event.getProducerId().getEmail()
                 ))
                 .collect(Collectors.toList());
 
@@ -119,7 +119,7 @@ public class EventController {
                 event.getCoverImageUrl(),
                 event.getMainImageUrl(),
                 event.getEventDateTime(),
-                event.getProducer().getEmail()
+                event.getProducerId().getEmail()
         );
 
         return ResponseEntity.ok(response);
@@ -157,7 +157,7 @@ public class EventController {
                         createdTicket.getEvent().getCoverImageUrl(),
                         createdTicket.getEvent().getMainImageUrl(),
                         createdTicket.getEvent().getEventDateTime(),
-                        createdTicket.getEvent().getProducer().getEmail()
+                        createdTicket.getEvent().getProducerId().getEmail()
                 )
         );
 
@@ -199,7 +199,7 @@ public class EventController {
                         ticket.getEvent().getCoverImageUrl(),
                         ticket.getEvent().getMainImageUrl(),
                         ticket.getEvent().getEventDateTime(),
-                        ticket.getEvent().getProducer().getEmail()
+                        ticket.getEvent().getProducerId().getEmail()
                 )
         );
 

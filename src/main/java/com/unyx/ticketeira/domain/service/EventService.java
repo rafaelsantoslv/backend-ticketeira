@@ -29,7 +29,7 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
 
         // Verifica se o producer autenticado é o criador do evento
-        if (!event.getProducer().getId().equals(producer.getId())) {
+        if (!event.getProducerId().getId().equals(producer.getId())) {
             throw new UnauthorizedException("You are not authorized to create tickets for this event.");
         }
 
@@ -45,7 +45,7 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
 
         // Verifica se o producer autenticado é o criador do evento
-        if (!event.getProducer().getId().equals(producer.getId())) {
+        if (!event.getProducerId().getId().equals(producer.getId())) {
             throw new UnauthorizedException("You are not authorized to update this event.");
         }
 
@@ -65,7 +65,7 @@ public class EventService {
 
     public Event createEvent(Event event, User producer) {
         // Associa o evento ao produtor autenticado
-        event.setProducer(producer);
+        event.setProducerId(producer);
         return eventRepository.save(event);
     }
 
@@ -79,7 +79,7 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));
 
         // Verifica se o producer autenticado é o criador do evento associado ao ticket
-        if (!ticket.getEvent().getProducer().getId().equals(producer.getId())) {
+        if (!ticket.getEvent().getProducerId().getId().equals(producer.getId())) {
             throw new UnauthorizedException("You are not authorized to update this ticket.");
         }
 

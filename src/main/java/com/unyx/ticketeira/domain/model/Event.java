@@ -30,5 +30,5 @@ public class Event {
     private LocalDateTime eventDateTime;
 
     @ManyToOne
-    private User producer;
+    private User producerId;
 }
