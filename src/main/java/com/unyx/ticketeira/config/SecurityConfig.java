@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/event/**").hasRole("PRODUCER")
                 .requestMatchers("/api/ticket/**").authenticated()
                 .requestMatchers("/api/payment/**").authenticated()
+                .requestMatchers("/api/email/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
