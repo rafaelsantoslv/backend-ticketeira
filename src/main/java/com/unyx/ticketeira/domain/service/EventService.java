@@ -69,6 +69,10 @@ public class EventService {
     }
 
     public List<Event> getAllEvents() {
+        List<Event> eventList = eventRepository.findAll();
+        if(eventList.isEmpty()) {
+            throw new EventNotFoundException("Event is empty");
+        }
         return eventRepository.findAll();
     }
 
