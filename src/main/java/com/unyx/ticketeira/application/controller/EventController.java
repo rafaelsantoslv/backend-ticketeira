@@ -88,7 +88,7 @@ public class EventController {
 
     @PutMapping("/{eventId}")
     public ResponseEntity<EventResponse> updateEvent(
-            @PathVariable Long eventId,
+            @PathVariable String eventId,
             @RequestBody @Valid EventRequest request,
             @AuthenticationPrincipal User producer) {
 
@@ -127,7 +127,7 @@ public class EventController {
 
     @PostMapping("/{eventId}/ticket")
     public ResponseEntity<TicketResponse> createTicket(
-            @PathVariable Long eventId,
+            @PathVariable String eventId,
             @RequestBody @Valid TicketRequest request,
             @AuthenticationPrincipal User producer) {
 
@@ -166,8 +166,8 @@ public class EventController {
 
     @PutMapping("/{eventId}/ticket/{ticketId}")
     public ResponseEntity<TicketResponse> updateTicket(
-            @PathVariable Long eventId,
-            @PathVariable Long ticketId,
+            @PathVariable String eventId,
+            @PathVariable String ticketId,
             @RequestBody @Valid TicketRequest request,
             @AuthenticationPrincipal User producer) {
 

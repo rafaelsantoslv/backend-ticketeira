@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TicketPurchaseRepository extends JpaRepository<TicketPurchase, Long> {
+public interface TicketPurchaseRepository extends JpaRepository<TicketPurchase, String> {
 }

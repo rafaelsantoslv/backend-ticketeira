@@ -23,7 +23,7 @@ public class TicketService {
         this.paymentGateway = paymentGateway;
     }
 
-    public TicketPurchase purchaseTicket(Long ticketId, Integer quantity, User buyer) {
+    public TicketPurchase purchaseTicket(String ticketId, Integer quantity, User buyer) {
         // Busca o ticket pelo ID
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TicketResponse {
-    private Long id;
+    private String id;
     private String batchName;
     private Double price;
     private Integer quantity;

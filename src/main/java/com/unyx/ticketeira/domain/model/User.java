@@ -3,6 +3,7 @@ package com.unyx.ticketeira.domain.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +15,12 @@ import java.util.Collections;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tab_user")
+@Table(name = "users")
+@EqualsAndHashCode(of="id")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String email;
     private String password;
@@ -55,5 +57,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true; // Pode ser ajustado conforme a lógica de ativação de conta
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 }

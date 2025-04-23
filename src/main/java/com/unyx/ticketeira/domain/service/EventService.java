@@ -23,7 +23,7 @@ public class EventService {
         this.ticketRepository = ticketRepository;
     }
 
-    public Ticket createTicket(Long eventId, Ticket ticket, User producer) {
+    public Ticket createTicket(String eventId, Ticket ticket, User producer) {
         // Busca o evento pelo ID
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
@@ -39,7 +39,7 @@ public class EventService {
 
     }
 
-    public Event updateEvent(Long eventId, Event updatedEvent, User producer) {
+    public Event updateEvent(String eventId, Event updatedEvent, User producer) {
         // Busca o evento pelo ID
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
@@ -73,7 +73,7 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Ticket updateTicket(Long ticketId, Ticket updatedTicket, User producer) {
+    public Ticket updateTicket(String ticketId, Ticket updatedTicket, User producer) {
         // Busca o ticket pelo ID
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));

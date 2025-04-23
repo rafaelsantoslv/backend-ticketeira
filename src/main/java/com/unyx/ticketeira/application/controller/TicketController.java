@@ -18,7 +18,7 @@ public class TicketController {
 
     @PostMapping("/{ticketId}/purchase")
     public ResponseEntity<String> purchaseTicket(
-            @PathVariable Long ticketId,
+            @PathVariable String ticketId,
             @RequestParam Integer quantity,
             @AuthenticationPrincipal User buyer) {
 
