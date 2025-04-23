@@ -15,8 +15,7 @@ public class EventResponse {
     private String address;
     private String classification;
     private String category;
-    private String coverImageUrl;
-    private String mainImageUrl;
-    private LocalDateTime eventDateTime;
+    private String imageUrl;
+    private LocalDateTime eventDate;
     private String producerEmail;
 }

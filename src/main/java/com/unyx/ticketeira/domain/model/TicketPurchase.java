@@ -29,12 +29,15 @@ public class TicketPurchase {
 
     private Integer quantity;
 
+    @Column(name = "amount_paid")
     private double amountPaid;
 
     @JoinColumn(name = "transaction_id")
     private String transactionId;
 
+    @Column(name = "payment_status")
     private String paymentStatus;
 
+    @Column(name = "purchase_date")
     private LocalDateTime purchaseDate;
 }

@@ -39,9 +39,8 @@ public class EventController {
         event.setAddress(request.getAddress());
         event.setClassification(request.getClassification());
         event.setCategory(request.getCategory());
-        event.setCoverImageUrl(request.getCoverImageUrl());
-        event.setMainImageUrl(request.getMainImageUrl());
-        event.setEventDateTime(request.getEventDateTime());
+        event.setImageUrl(request.getImageUrl());
+        event.setEventDate(request.getEventDate());
 
         // Salva o evento no banco de dados
         Event createdEvent = eventService.createEvent(event, producer);
@@ -55,10 +54,9 @@ public class EventController {
                 createdEvent.getAddress(),
                 createdEvent.getClassification(),
                 createdEvent.getCategory(),
-                createdEvent.getCoverImageUrl(),
-                createdEvent.getMainImageUrl(),
-                createdEvent.getEventDateTime(),
-                createdEvent.getProducerId().getEmail()
+                createdEvent.getImageUrl(),
+                createdEvent.getEventDate(),
+                createdEvent.getProducer().getEmail()
         );
 
         return ResponseEntity.ok(response);
@@ -76,10 +74,9 @@ public class EventController {
                         event.getAddress(),
                         event.getClassification(),
                         event.getCategory(),
-                        event.getCoverImageUrl(),
-                        event.getMainImageUrl(),
-                        event.getEventDateTime(),
-                        event.getProducerId().getEmail()
+                        event.getImageUrl(),
+                        event.getEventDate(),
+                        event.getProducer().getEmail()
                 ))
                 .collect(Collectors.toList());
 
@@ -100,9 +97,8 @@ public class EventController {
         updatedEvent.setAddress(request.getAddress());
         updatedEvent.setClassification(request.getClassification());
         updatedEvent.setCategory(request.getCategory());
-        updatedEvent.setCoverImageUrl(request.getCoverImageUrl());
-        updatedEvent.setMainImageUrl(request.getMainImageUrl());
-        updatedEvent.setEventDateTime(request.getEventDateTime());
+        updatedEvent.setImageUrl(request.getImageUrl());
+        updatedEvent.setEventDate(request.getEventDate());
 
         // Atualiza o evento no banco de dados
         Event event = eventService.updateEvent(eventId, updatedEvent, producer);
@@ -116,10 +112,9 @@ public class EventController {
                 event.getAddress(),
                 event.getClassification(),
                 event.getCategory(),
-                event.getCoverImageUrl(),
-                event.getMainImageUrl(),
-                event.getEventDateTime(),
-                event.getProducerId().getEmail()
+                event.getImageUrl(),
+                event.getEventDate(),
+                event.getProducer().getEmail()
         );
 
         return ResponseEntity.ok(response);
@@ -133,7 +128,7 @@ public class EventController {
 
         // Cria o objeto Ticket com os dados do request
         Ticket ticket = new Ticket();
-        ticket.setBatchName(request.getBatchName());
+        ticket.setTicketName(request.getTicketName());
         ticket.setPrice(request.getPrice());
         ticket.setQuantity(request.getQuantity());
         ticket.setIsActive(request.getIsActive());
@@ -142,7 +137,7 @@ public class EventController {
         Ticket createdTicket = eventService.createTicket(eventId, ticket, producer);
         TicketResponse response = new TicketResponse(
                 createdTicket.getId(),
-                createdTicket.getBatchName(),
+                createdTicket.getTicketName(),
                 createdTicket.getPrice(),
                 createdTicket.getQuantity(),
                 createdTicket.getIsActive(),
@@ -154,10 +149,9 @@ public class EventController {
                         createdTicket.getEvent().getAddress(),
                         createdTicket.getEvent().getClassification(),
                         createdTicket.getEvent().getCategory(),
-                        createdTicket.getEvent().getCoverImageUrl(),
-                        createdTicket.getEvent().getMainImageUrl(),
-                        createdTicket.getEvent().getEventDateTime(),
-                        createdTicket.getEvent().getProducerId().getEmail()
+                        createdTicket.getEvent().getImageUrl(),
+                        createdTicket.getEvent().getEventDate(),
+                        createdTicket.getEvent().getProducer().getEmail()
                 )
         );
 
@@ -173,7 +167,7 @@ public class EventController {
 
         // Cria o objeto Ticket com os dados do request
         Ticket updatedTicket = new Ticket();
-        updatedTicket.setBatchName(request.getBatchName());
+        updatedTicket.setTicketName(request.getTicketName());
         updatedTicket.setPrice(request.getPrice());
         updatedTicket.setQuantity(request.getQuantity());
         updatedTicket.setIsActive(request.getIsActive());
@@ -184,7 +178,7 @@ public class EventController {
         // Cria o TicketResponse
         TicketResponse response = new TicketResponse(
                 ticket.getId(),
-                ticket.getBatchName(),
+                ticket.getTicketName(),
                 ticket.getPrice(),
                 ticket.getQuantity(),
                 ticket.getIsActive(),
@@ -196,10 +190,9 @@ public class EventController {
                         ticket.getEvent().getAddress(),
                         ticket.getEvent().getClassification(),
                         ticket.getEvent().getCategory(),
-                        ticket.getEvent().getCoverImageUrl(),
-                        ticket.getEvent().getMainImageUrl(),
-                        ticket.getEvent().getEventDateTime(),
-                        ticket.getEvent().getProducerId().getEmail()
+                        ticket.getEvent().getImageUrl(),
+                        ticket.getEvent().getEventDate(),
+                        ticket.getEvent().getProducer().getEmail()
                 )
         );
 

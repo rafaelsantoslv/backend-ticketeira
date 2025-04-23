@@ -17,9 +17,13 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String batchName;
+    @Column(name = "ticket_name")
+    private String ticketName;
+
     private Double price;
+
     private Integer quantity;
+    @Column(name = "is_active")
     private Boolean isActive;
 
     @JoinColumn(name = "event_id", nullable = false)

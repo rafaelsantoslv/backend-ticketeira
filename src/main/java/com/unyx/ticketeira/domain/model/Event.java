@@ -20,17 +20,25 @@ public class Event {
     private String id;
 
     private String title;
+
     private String description;
+
+    @Column(name = "name_locale")
     private String nameLocale;
+
     private String address;
+
     private String classification;
+
     private String category;
 
-    private String coverImageUrl;
-    private String mainImageUrl;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    private LocalDateTime eventDateTime;
+    @Column(name = "event_date")
+    private LocalDateTime eventDate;
 
     @ManyToOne
-    private User producerId;
+    @JoinColumn(name = "producer_id")
+    private User producer;
 }

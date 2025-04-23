@@ -29,7 +29,7 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
 
         // Verifica se o producer autenticado é o criador do evento
-        if (!event.getProducerId().getId().equals(producer.getId())) {
+        if (!event.getProducer().getId().equals(producer.getId())) {
             throw new UnauthorizedException("You are not authorized to create tickets for this event.");
         }
 
@@ -45,7 +45,7 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
 
         // Verifica se o producer autenticado é o criador do evento
-        if (!event.getProducerId().getId().equals(producer.getId())) {
+        if (!event.getProducer().getId().equals(producer.getId())) {
             throw new UnauthorizedException("You are not authorized to update this event.");
         }
 
@@ -56,16 +56,15 @@ public class EventService {
         event.setAddress(updatedEvent.getAddress());
         event.setClassification(updatedEvent.getClassification());
         event.setCategory(updatedEvent.getCategory());
-        event.setCoverImageUrl(updatedEvent.getCoverImageUrl());
-        event.setMainImageUrl(updatedEvent.getMainImageUrl());
-        event.setEventDateTime(updatedEvent.getEventDateTime());
+        event.setImageUrl(updatedEvent.getImageUrl());
+        event.setEventDate(updatedEvent.getEventDate());
 
         return eventRepository.save(event);
     }
 
     public Event createEvent(Event event, User producer) {
         // Associa o evento ao produtor autenticado
-        event.setProducerId(producer);
+        event.setProducer(producer);
         return eventRepository.save(event);
     }
 
@@ -79,12 +78,12 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Ticket with ID " + ticketId + " not found"));
 
         // Verifica se o producer autenticado é o criador do evento associado ao ticket
-        if (!ticket.getEvent().getProducerId().getId().equals(producer.getId())) {
+        if (!ticket.getEvent().getProducer().getId().equals(producer.getId())) {
             throw new UnauthorizedException("You are not authorized to update this ticket.");
         }
 
         // Atualiza os dados do ticket
-        ticket.setBatchName(updatedTicket.getBatchName());
+        ticket.setTicketName(updatedTicket.getTicketName());
         ticket.setPrice(updatedTicket.getPrice());
         ticket.setQuantity(updatedTicket.getQuantity());
         ticket.setIsActive(updatedTicket.getIsActive());

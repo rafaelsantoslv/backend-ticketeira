@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class TicketRequest {
     @NotNull(message = "Batch name cannot be null")
-    private String batchName;
+    private String ticketName;
 
     @NotNull(message = "Price cannot be null")
     @Min(value = 0, message = "Price must be greater than or equal to 0")

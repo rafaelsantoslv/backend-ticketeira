@@ -27,5 +27,6 @@ public class TicketValidated {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "validate_at")
     private LocalDateTime validateAt;
 }

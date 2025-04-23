@@ -26,10 +26,9 @@ public class EventRequest {
     @NotBlank
     private String category;
 
-    private String coverImageUrl;
-    private String mainImageUrl;
+    private String imageUrl;
 
     @NotNull
-    private LocalDateTime eventDateTime;
+    private LocalDateTime eventDate;
 
 }
