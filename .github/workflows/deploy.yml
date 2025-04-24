@@ -22,9 +22,8 @@ jobs:
             cd /opt/ticketeira/backend-ticketeira
             git pull origin main
           
-            echo "📦 Removendo containers e imagens antigas"
-            docker-compose down backend
-            docker-compose rm -f backend
+            echo "📦 Removendo containers, redes e orfãos antigos"
+            docker-compose down --remove-orphans
           
             echo "🏗️ Construindo nova imagem"
             docker-compose build --no-cache backend
