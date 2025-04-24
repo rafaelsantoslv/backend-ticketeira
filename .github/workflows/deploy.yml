@@ -29,13 +29,13 @@ jobs:
             docker-compose build --no-cache backend
           
             echo "🚀 Iniciando novo container"
-            docker-compose up -d backend
+            docker-compose up -d
           
             echo "⏳ Aguardando inicialização (30s)"
             sleep 30
           
             echo "🔍 Verificando status do container"
-            docker-compose ps backend
+            docker-compose ps
           
             echo "📝 Verificando logs do container"
             docker-compose logs --tail=50 backend
