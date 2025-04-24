@@ -1,0 +1,46 @@
+name: Deploy Backend to GCP VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy Backend via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'ENDSSH'
+            echo "🔁 Iniciando deploy do backend"
+            cd /opt/ticketeira/backend-ticketeira
+            git pull origin main
+          
+            echo "📦 Removendo containers e imagens antigas"
+            docker-compose rm -f backend
+            docker-compose down backend
+          
+            echo "🏗️ Construindo nova imagem"
+            docker-compose build --no-cache backend
+          
+            echo "🚀 Iniciando novo container"
+            docker-compose up -d backend
+          
+            echo "⏳ Aguardando inicialização (30s)"
+            sleep 30
+          
+            echo "🔍 Verificando status do container"
+            docker-compose ps backend
+          
+            echo "📝 Verificando logs do container"
+            docker-compose logs --tail=50 backend
+          
+            echo "🧹 Limpando imagens não utilizadas"
+            docker image prune -f
+          ENDSSH
