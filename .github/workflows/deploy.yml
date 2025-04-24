@@ -23,8 +23,8 @@ jobs:
             git pull origin main
           
             echo "📦 Removendo containers e imagens antigas"
-            docker-compose rm -f backend
             docker-compose down backend
+            docker-compose rm -f backend
           
             echo "🏗️ Construindo nova imagem"
             docker-compose build --no-cache backend
