@@ -13,7 +13,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000", "http://34.16.30.144:8080")// Permite qualquer origem
+                        .allowedOrigins("http://localhost:3000", "http://34.16.30.144")// Permite qualquer origem
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true); // Permite o envio de credenciais (cookies, headers de autenticação, etc.)
