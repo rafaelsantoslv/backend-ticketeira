@@ -1,5 +1,7 @@
 package com.unyx.ticketeira.domain.service;
 
+import com.unyx.ticketeira.application.dto.Auth.AuthResponse;
+import com.unyx.ticketeira.application.dto.Auth.UserDetails;
 import com.unyx.ticketeira.config.JwtUtil;
 import com.unyx.ticketeira.domain.model.Role;
 import com.unyx.ticketeira.domain.model.User;
@@ -21,15 +23,19 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String login(String email, String password) {
+    public AuthResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + "not found"));
 
         if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        UserDetails userResponse = new UserDetails(user.getEmail(), user.getRole().name());
 
-        return jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+
+
+        return new AuthResponse(token, userResponse);
     }
 
 
