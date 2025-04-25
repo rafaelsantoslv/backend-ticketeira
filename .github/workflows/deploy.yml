@@ -1,45 +1,12 @@
-name: Deploy Backend to GCP VM
+name: Deploy Backend for Ticketeira Unyx
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy Backend via SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'ENDSSH'
-            echo "🔁 Iniciando deploy do backend"
-            cd /opt/ticketeira/backend-ticketeira
-            git pull origin main
-          
-            echo "📦 Removendo containers, redes e orfãos antigos"
-            docker-compose down --remove-orphans
-          
-            echo "🏗️ Construindo nova imagem"
-            docker-compose build --no-cache backend
-          
-            echo "🚀 Iniciando novo container"
-            docker-compose up -d
-          
-            echo "⏳ Aguardando inicialização (30s)"
-            sleep 30
-          
-            echo "🔍 Verificando status do container"
-            docker-compose ps
-          
-            echo "📝 Verificando logs do container"
-            docker-compose logs --tail=50 backend
-          
-            echo "🧹 Limpando imagens não utilizadas"
-            docker image prune -f
-          ENDSSH
+      - name: Checkout code
+        uses: actions/checkout@v3
