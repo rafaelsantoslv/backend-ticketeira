@@ -23,3 +23,12 @@ jobs:
         run: docker build -t rafaelsantoslv442/ticketeira .
       - name: Push image docker
         run: docker push rafaelsantoslv442/ticketeira
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull rafaelsantoslv442/ticketeira:latest
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name backend_ticketeira rafaelsantoslv442/ticketeira
