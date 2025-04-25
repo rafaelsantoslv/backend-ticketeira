@@ -32,5 +32,7 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull rafaelsantoslv442/ticketeira:latest
+      - name: Remove docker container Running
+        run: docker rm -f backend_ticketeira
       - name: Run docker container
         run: docker run -d -p 8080:8080 --name backend_ticketeira rafaelsantoslv442/ticketeira
