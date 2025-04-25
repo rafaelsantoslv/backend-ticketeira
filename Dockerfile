@@ -1,11 +1,5 @@
-# Etapa de build
-FROM maven:3.6.3-openjdk-17 AS builder
+FROM FROM eclipse-temurin:17-alpine
 WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
-
-# Etapa de execução
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY target/ticketeira-1.0.jar ticketeira-1.0.jar
+EXPOSE 8080
+CMD["java", "-jar", "ticketeira-1.0.jar "]
