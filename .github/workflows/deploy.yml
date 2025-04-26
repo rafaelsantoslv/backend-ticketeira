@@ -36,17 +36,17 @@ jobs:
         run: docker rm -f backend_ticketeira
       - name: Run docker container
         run: docker run -d -p 8080:8080 \
-          -e DB_HOST=${{secrets.DB_HOST}} \
-          -e DB_PORT=${{secrets.DB_PORT}} \
-          -e DB_DATABASE=${{secrets.DB_DATABASE}} \
-          -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-          -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          -e JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }} \
-          -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-          -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-          -e AWS_REGION=${{ secrets.AWS_REGION }} \
-          --name backend_ticketeira rafaelsantoslv442/ticketeira
+       -e DB_HOST=${{ secrets.DB_HOST }} \
+       -e DB_PORT=${{ secrets.DB_PORT }} \
+       -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+       -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+       -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+       -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+       -e JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }} \
+       -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+       -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+       -e AWS_REGION=${{ secrets.AWS_REGION }} \
+       --name backend_ticketeira_${{ github.run_id }} rafaelsantoslv442/ticketeira:latest
           # Adicionando steps de verificação
       - name: Check if container is running
         run: docker ps | grep backend_ticketeira
