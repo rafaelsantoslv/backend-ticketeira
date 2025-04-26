@@ -10,21 +10,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
+
       - name: Build project
         run: mvn clean install -DskipTests
+
       - name: List files in target folder
         run: ls -al target/
+
       - name: Login Docker Hub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+
       - name: Build docker image
-        run: docker build -t rafaelsantoslv442/ticketeira .
+        run: docker build -t rafaelsantoslv442/ticketeira:latest .
+
       - name: Push image docker
-        run: docker push rafaelsantoslv442/ticketeira
+        run: docker push rafaelsantoslv442/ticketeira:latest
 
   deploy:
     needs: build
@@ -32,27 +38,48 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull rafaelsantoslv442/ticketeira:latest
-      - name: Remove docker container Running
-        run: docker rm -f backend_ticketeira
-      - name: Run docker container
-        run: docker run -d -p 8080:8080 \
-       -e DB_HOST=${{ secrets.DB_HOST }} \
-       -e DB_PORT=${{ secrets.DB_PORT }} \
-       -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
-       -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-       -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-       -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-       -e JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }} \
-       -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-       -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-       -e AWS_REGION=${{ secrets.AWS_REGION }} \
-       --name backend_ticketeira_${{ github.run_id }} rafaelsantoslv442/ticketeira:latest
-          # Adicionando steps de verificação
-      - name: Check if container is running
-        run: docker ps | grep backend_ticketeira
 
-      - name: Check files in container
-        run: docker exec backend_ticketeira ls -la /app
+      - name: Remove old container
+        run: |
+          if docker ps -a | grep -q backend_ticketeira; then
+            docker rm -f backend_ticketeira
+          fi
+
+      - name: Run docker container
+        run: |
+          docker run -d \
+            -p 8080:8080 \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }} \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            --network ticketeira_default \
+            --name backend_ticketeira \
+            rafaelsantoslv442/ticketeira:latest
+
+      - name: Check if container is running
+        run: |
+          if ! docker ps | grep -q backend_ticketeira; then
+            echo "Container is not running"
+            exit 1
+          fi
 
       - name: Check container logs
-        run: docker logs backend_ticketeira
+        run: |
+          sleep 10  # Wait for container to initialize
+          docker logs backend_ticketeira || true
+
+      - name: Health check
+        run: |
+          sleep 5
+          if ! curl -f http://localhost:8080/actuator/health 2>/dev/null; then
+            echo "Health check failed"
+            docker logs backend_ticketeira
+            exit 1
+          fi
