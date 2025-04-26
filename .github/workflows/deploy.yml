@@ -36,3 +36,12 @@ jobs:
         run: docker rm -f backend_ticketeira
       - name: Run docker container
         run: docker run -d -p 8080:8080 --name backend_ticketeira rafaelsantoslv442/ticketeira
+          # Adicionando steps de verificação
+      - name: Check if container is running
+        run: docker ps | grep backend_ticketeira
+
+      - name: Check files in container
+        run: docker exec backend_ticketeira ls -la /app
+
+      - name: Check container logs
+        run: docker logs backend_ticketeira
