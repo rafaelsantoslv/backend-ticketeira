@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Data
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "tickets")
 @EqualsAndHashCode(of="id")
-public class Ticket {
+public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -26,32 +26,15 @@ public class Ticket {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String code;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(name = "discount_type", nullable = false)
     private String discountType;
+    private String discountValue;
+    private int usageLimit;
+    private int usageCount;
+    private boolean isActive;
 
-    @Column(name = "discount_value", nullable = false)
-    private BigDecimal discountValue;
-
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
-
-    @Column(name = "usage_limit")
-    private Integer usageLimit;
-
-    @Column(name = "usage_count")
-    private Integer usageCount = 0;
-
-    @Column(name = "is_active")
-    private Boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
