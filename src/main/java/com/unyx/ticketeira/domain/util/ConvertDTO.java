@@ -1,19 +1,19 @@
 package com.unyx.ticketeira.domain.util;
 
-import com.unyx.ticketeira.application.dto.User.CreateUserDTO;
+import com.unyx.ticketeira.application.dto.User.RegisterUserDTO;
 import com.unyx.ticketeira.application.dto.User.UpdateUserDTO;
 import com.unyx.ticketeira.domain.model.Role;
 import com.unyx.ticketeira.domain.model.User;
 
 public class ConvertDTO {
 
-    public static User convertUser(CreateUserDTO dto, Role userRole) {
+    public static User convertUser(RegisterUserDTO dto, Role userRole) {
         User user = new User();
 
         String passwordEncrypt = PasswordUtil.encryptPassword(dto.password());
 
         user.setEmail(dto.email());
-        user.setPassword(passwordEncrypt);
+        user.setPassword(dto.password());
         user.setName(dto.name());
         user.setDocument(dto.document());
         user.setPhone(dto.phone());

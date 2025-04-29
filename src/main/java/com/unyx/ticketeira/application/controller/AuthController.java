@@ -1,9 +1,9 @@
 package com.unyx.ticketeira.application.controller;
 
 
-import com.unyx.ticketeira.application.dto.Auth.RegisterResponse;
-import com.unyx.ticketeira.application.dto.User.CreateUserDTO;
-import com.unyx.ticketeira.application.usecases.AuthUseCase;
+import com.unyx.ticketeira.application.dto.auth.RegisterResponse;
+import com.unyx.ticketeira.application.dto.User.RegisterUserDTO;
+import com.unyx.ticketeira.application.usecases.auth.RegisterUserUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthUseCase authUseCase;
+    private final RegisterUserUseCase registerUserUseCase;
 
-    public AuthController(AuthUseCase authUseCase) {
-        this.authUseCase = authUseCase;
+    public AuthController(RegisterUserUseCase registerUserUseCase) {
+        this.registerUserUseCase = registerUserUseCase;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody @Valid CreateUserDTO request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterUserDTO request) {
 
-        RegisterResponse response = authUseCase.register(request);
+        RegisterResponse response = registerUserUseCase.execute(request);
 
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);

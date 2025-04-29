@@ -1,8 +1,6 @@
 package com.unyx.ticketeira.domain.service;
 
-import com.unyx.ticketeira.application.dto.User.CreateUserDTO;
 import com.unyx.ticketeira.application.dto.User.UpdateUserDTO;
-import com.unyx.ticketeira.domain.model.Role;
 import com.unyx.ticketeira.domain.model.User;
 import com.unyx.ticketeira.domain.repository.UserRepository;
 import com.unyx.ticketeira.domain.service.Interface.IUserService;
@@ -22,10 +20,8 @@ public class UserServiceImpl implements IUserService {
         this.userRepository = userRepository;
     }
 
-    public User create(CreateUserDTO user, Role userRole){
-        User userCreate = ConvertDTO.convertUser(user, userRole);
-
-        return userRepository.save(userCreate);
+    public User create(User user){
+        return userRepository.save(user);
     }
 
     public User findById(String id) {

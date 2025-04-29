@@ -1,4 +1,4 @@
-package com.unyx.ticketeira.application.dto.Auth;
+package com.unyx.ticketeira.application.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
