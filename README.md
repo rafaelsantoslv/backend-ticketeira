@@ -73,7 +73,11 @@ Authorization: Bearer token
 ```json
 {
   "email": "novousuario@exemplo.com",
-  "password": "senha123"
+  "password": "senha123",
+  "name": "rafael dos santos",
+  "phone": "48988228714",
+  "document": "11111122233"
+  
 }
 ```
 

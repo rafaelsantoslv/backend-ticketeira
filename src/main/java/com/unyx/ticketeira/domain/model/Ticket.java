@@ -26,6 +26,14 @@ public class Ticket {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
+    @ManyToOne
+    @JoinColumn(name = "sector_id", nullable = false)
+    private Sector sector;
+
+    @ManyToOne
+    @JoinColumn(name = "batch_id", nullable = false)
+    private Batch batch;
+
     @Column(nullable = false, unique = true)
     private String code;
 
