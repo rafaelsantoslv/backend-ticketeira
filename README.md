@@ -53,12 +53,10 @@ Authorization: Bearer token
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "userDetails": {
-    "id": "user123",
-    "email": "usuario@exemplo.com",
-    "role": "ADMIN"
-  }
+  "email": "victorpasqual05@gmail.com",
+  "name": "rafael dos santos",
+  "role": "USER",
+  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2aWN0b3Jwk2NTUzNn0..."
 }
 ```
 
