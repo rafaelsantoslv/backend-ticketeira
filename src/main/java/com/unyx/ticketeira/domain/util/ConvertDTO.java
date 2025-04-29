@@ -13,7 +13,7 @@ public class ConvertDTO {
         String passwordEncrypt = PasswordUtil.encryptPassword(dto.password());
 
         user.setEmail(dto.email());
-        user.setPassword(dto.password());
+        user.setPassword(passwordEncrypt);
         user.setName(dto.name());
         user.setDocument(dto.document());
         user.setPhone(dto.phone());

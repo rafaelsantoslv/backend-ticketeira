@@ -11,6 +11,7 @@ public class PasswordUtil {
     }
 
     public static boolean matches(String rawPassword, String encodedPassword) {
+        System.out.println("Resultado foi: " + passwordEncoder.matches(rawPassword, encodedPassword));
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
