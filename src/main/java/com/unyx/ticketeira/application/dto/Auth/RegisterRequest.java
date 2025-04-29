@@ -19,4 +19,13 @@ public class RegisterRequest {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @NotBlank(message = "Phone is required")
+    private String phone;
+
+    @NotBlank(message = "Document is required")
+    private String document;
+
 }
