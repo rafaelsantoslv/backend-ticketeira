@@ -59,6 +59,7 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        // Retorna a role do usuário como uma lista de GrantedAuthority

@@ -9,13 +9,16 @@ import java.util.List;
 
 public interface IUserService {
     User create(CreateUserDTO user, Role userRole);
+    User update(String id, UpdateUserDTO userData);
+    void delete(String id);
+
     User findById(String id);
     User findByEmail(String email);
-    User update(String id, UpdateUserDTO userData);
+    User findByDocument(String document);
     List<User> findAll();
-    void delete(String id);
-//    void assignRole(String userId, String roleId);
-//    void requestPasswordReset(String email);
-//    void resetPassword(String token, String newPassword);
-//    void verifyEmail(String token);
+
+    boolean existsByEmail(String email);
+    boolean existsByDocument(String document);
+
+
 }

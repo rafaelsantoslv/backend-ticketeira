@@ -1,11 +1,9 @@
 package com.unyx.ticketeira.application.controller;
 
 
-import com.unyx.ticketeira.application.dto.Auth.RegisterRequest;
 import com.unyx.ticketeira.application.dto.Auth.RegisterResponse;
 import com.unyx.ticketeira.application.dto.User.CreateUserDTO;
-import com.unyx.ticketeira.domain.model.User;
-import com.unyx.ticketeira.domain.useCases.AuthUseCase;
+import com.unyx.ticketeira.application.usecases.AuthUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

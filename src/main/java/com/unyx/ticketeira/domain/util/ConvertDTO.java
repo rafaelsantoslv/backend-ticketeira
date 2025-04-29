@@ -10,9 +10,10 @@ public class ConvertDTO {
     public static User convertUser(CreateUserDTO dto, Role userRole) {
         User user = new User();
 
+        String passwordEncrypt = PasswordUtil.encryptPassword(dto.password());
 
         user.setEmail(dto.email());
-        user.setPassword(dto.password());
+        user.setPassword(passwordEncrypt);
         user.setName(dto.name());
         user.setDocument(dto.document());
         user.setPhone(dto.phone());
