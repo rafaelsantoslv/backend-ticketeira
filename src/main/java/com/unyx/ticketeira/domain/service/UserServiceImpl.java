@@ -1,6 +1,6 @@
 package com.unyx.ticketeira.domain.service;
 
-import com.unyx.ticketeira.application.dto.User.UpdateUserDTO;
+import com.unyx.ticketeira.application.dto.user.UpdateUserDTO;
 import com.unyx.ticketeira.domain.model.User;
 import com.unyx.ticketeira.domain.repository.UserRepository;
 import com.unyx.ticketeira.domain.service.Interface.IUserService;

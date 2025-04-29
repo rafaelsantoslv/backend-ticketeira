@@ -1,7 +1,7 @@
 package com.unyx.ticketeira.application.usecases.auth;
 
-import com.unyx.ticketeira.application.dto.auth.RegisterResponse;
-import com.unyx.ticketeira.application.dto.User.RegisterUserDTO;
+import com.unyx.ticketeira.application.dto.user.RegisterResponse;
+import com.unyx.ticketeira.application.dto.user.RegisterRequest;
 import com.unyx.ticketeira.domain.model.Role;
 import com.unyx.ticketeira.domain.model.User;
 import com.unyx.ticketeira.domain.repository.RoleRepository;
@@ -28,7 +28,7 @@ public class RegisterUserUseCase {
         this.userRepository = userRepository;
     }
 
-    public RegisterResponse execute(RegisterUserDTO user){
+    public RegisterResponse execute(RegisterRequest user){
         Role userRole = roleRepository.findByName("USER").orElseThrow(() -> new RoleNotFoundException("Role already exists"));
 
         if(userService.existsByEmail(user.email())){

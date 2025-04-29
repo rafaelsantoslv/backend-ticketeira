@@ -1,8 +1,8 @@
 package com.unyx.ticketeira.application.controller;
 
 
-import com.unyx.ticketeira.application.dto.auth.RegisterResponse;
-import com.unyx.ticketeira.application.dto.User.RegisterUserDTO;
+import com.unyx.ticketeira.application.dto.user.RegisterResponse;
+import com.unyx.ticketeira.application.dto.user.RegisterRequest;
 import com.unyx.ticketeira.application.usecases.auth.RegisterUserUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterUserDTO request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) {
 
         RegisterResponse response = registerUserUseCase.execute(request);
 
