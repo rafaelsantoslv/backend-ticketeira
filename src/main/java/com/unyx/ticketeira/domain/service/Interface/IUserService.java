@@ -1,20 +1,22 @@
 package com.unyx.ticketeira.domain.service.Interface;
 
-import com.unyx.ticketeira.application.dto.User.CreateUserDTO;
-import com.unyx.ticketeira.application.dto.User.UpdateUserDTO;
+import com.unyx.ticketeira.application.dto.user.UpdateUserDTO;
 import com.unyx.ticketeira.domain.model.User;
 
 import java.util.List;
 
 public interface IUserService {
-    User create(CreateUserDTO userData);
+    User create(User user);
+    User update(String id, UpdateUserDTO userData);
+    void delete(String id);
+
     User findById(String id);
     User findByEmail(String email);
-    User update(String id, UpdateUserDTO userData);
+    User findByDocument(String document);
     List<User> findAll();
-    void delete(String id);
-    void verifyEmail(String token);
-    void resetPassword(String token, String newPassword);
-    void requestPasswordReset(String email);
-    void assignRole(String userId, String roleId);
+
+    boolean existsByEmail(String email);
+    boolean existsByDocument(String document);
+
+
 }
