@@ -1,4 +1,4 @@
-package com.unyx.ticketeira.config;
+package com.unyx.ticketeira.config.database;
 
 import com.unyx.ticketeira.domain.model.Role;
 import com.unyx.ticketeira.domain.repository.RoleRepository;

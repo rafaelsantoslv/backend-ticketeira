@@ -1,19 +1,24 @@
 package com.unyx.ticketeira.domain.repository;
 
 import com.unyx.ticketeira.domain.model.Event;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, String> {
     List<Event> findByIsPublished(Boolean isPublished);
     List<Event> findByIsFeatured(Boolean isFeatured);
+
+    List<Event> findAllByCreatorId(String creatorId, Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.startDate >= :now AND e.isPublished = true ORDER BY e.startDate")
     List<Event> findUpcomingEvents(@Param("now") LocalDateTime now);

@@ -2,7 +2,7 @@ package com.unyx.ticketeira.application.usecases.auth;
 
 import com.unyx.ticketeira.application.dto.user.LoginRequest;
 import com.unyx.ticketeira.application.dto.user.LoginResponse;
-import com.unyx.ticketeira.config.JwtUtil;
+import com.unyx.ticketeira.config.security.JwtUtil;
 import com.unyx.ticketeira.domain.model.User;
 import com.unyx.ticketeira.domain.repository.UserRepository;
 import com.unyx.ticketeira.domain.util.PasswordUtil;
@@ -27,7 +27,7 @@ public class LoginUserUseCase {
             throw new UnauthorizedException("User or password is incorrect");
         }
 
-        String token = jwtUtil.generateToken(userExists.getEmail(), userExists.getRole().getName(), userExists.getName());
+        String token = jwtUtil.generateToken(userExists.getId(),userExists.getEmail(), userExists.getRole().getName(), userExists.getName());
         return new LoginResponse(userExists.getEmail(), userExists.getName(), userExists.getRole().getName(), token);
     }
 }

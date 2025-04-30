@@ -7,9 +7,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Data
@@ -60,39 +64,5 @@ public class User {
     private LocalDateTime updatedAt;
 
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        // Retorna a role do usuário como uma lista de GrantedAuthority
-//        return Collections.singleton(() -> "ROLE_" + role.name());
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return email; // O email será usado como o "username" no Spring Security
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true; // Pode ser ajustado conforme a lógica de expiração de conta
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true; // Pode ser ajustado conforme a lógica de bloqueio de conta
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true; // Pode ser ajustado conforme a lógica de expiração de credenciais
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true; // Pode ser ajustado conforme a lógica de ativação de conta
-//    }
-//
-//    @Override
-//    public String getPassword() {
-//        return password;
-//    }
+
 }

@@ -7,13 +7,18 @@ import com.unyx.ticketeira.application.dto.user.RegisterResponse;
 import com.unyx.ticketeira.application.dto.user.RegisterRequest;
 import com.unyx.ticketeira.application.usecases.auth.LoginUserUseCase;
 import com.unyx.ticketeira.application.usecases.auth.RegisterUserUseCase;
+import com.unyx.ticketeira.config.security.AuthenticatedUser;
+import com.unyx.ticketeira.exception.UnauthorizedException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,4 +47,22 @@ public class AuthController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+        @GetMapping("/validate-token")
+        public ResponseEntity<?> validateToken(Authentication authentication) {
+            if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser)) {
+                throw new UnauthorizedException("Token inválido");
+            }
+
+            AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
+
+            Map<String, String> response = Map.of(
+                    "id", user.getId(),
+                    "email", user.getEmail(),
+                    "role", user.getRole()
+            );
+
+            return ResponseEntity.ok(response);
+        }
+
 }

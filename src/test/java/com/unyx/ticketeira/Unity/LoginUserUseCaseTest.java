@@ -2,7 +2,7 @@ package com.unyx.ticketeira.Unity;
 import com.unyx.ticketeira.application.dto.user.LoginRequest;
 import com.unyx.ticketeira.application.dto.user.LoginResponse;
 import com.unyx.ticketeira.application.usecases.auth.LoginUserUseCase;
-import com.unyx.ticketeira.config.JwtUtil;
+import com.unyx.ticketeira.config.security.JwtUtil;
 import com.unyx.ticketeira.domain.model.Role;
 import com.unyx.ticketeira.domain.model.User;
 import com.unyx.ticketeira.domain.repository.UserRepository;
@@ -11,11 +11,9 @@ import com.unyx.ticketeira.exception.InvalidCredentialsException;
 import com.unyx.ticketeira.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
