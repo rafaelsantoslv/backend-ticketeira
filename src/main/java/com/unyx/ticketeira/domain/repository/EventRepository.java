@@ -18,7 +18,7 @@ public interface EventRepository extends JpaRepository<Event, String> {
     List<Event> findByIsPublished(Boolean isPublished);
     List<Event> findByIsFeatured(Boolean isFeatured);
 
-    List<Event> findAllByCreatorId(String creatorId, Pageable pageable);
+    Page<Event> findAllByCreatorId(String creatorId, Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.startDate >= :now AND e.isPublished = true ORDER BY e.startDate")
     List<Event> findUpcomingEvents(@Param("now") LocalDateTime now);

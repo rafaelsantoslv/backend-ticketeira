@@ -59,9 +59,6 @@ public class Event {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "event_date")
-    private LocalDateTime eventDate;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
