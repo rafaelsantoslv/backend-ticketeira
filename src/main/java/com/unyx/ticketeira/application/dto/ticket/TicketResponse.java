@@ -1,6 +1,6 @@
 package com.unyx.ticketeira.application.dto.ticket;
 
-import com.unyx.ticketeira.application.dto.event.EventResponse;
+import com.unyx.ticketeira.application.dto.event.EventCreateResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,5 +12,5 @@ public class TicketResponse {
     private Double price;
     private Integer quantity;
     private Boolean isActive;
-    private EventResponse event;
+    private EventCreateResponse event;
 }
