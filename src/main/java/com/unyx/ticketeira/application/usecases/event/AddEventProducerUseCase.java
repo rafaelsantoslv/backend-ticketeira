@@ -12,11 +12,11 @@ import com.unyx.ticketeira.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AddEventUseCase {
+public class AddEventProducerUseCase {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
-    public AddEventUseCase(EventRepository eventRepository, UserRepository userRepository) {
+    public AddEventProducerUseCase(EventRepository eventRepository, UserRepository userRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
     }
