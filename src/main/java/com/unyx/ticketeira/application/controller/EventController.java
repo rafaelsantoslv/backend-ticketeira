@@ -2,30 +2,25 @@ package com.unyx.ticketeira.application.controller;
 
 import com.unyx.ticketeira.application.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.application.dto.event.EventCreateResponse;
-import com.unyx.ticketeira.application.dto.event.EventListAllByProducerResponse;
 import com.unyx.ticketeira.application.dto.event.EventsResponse;
-import com.unyx.ticketeira.application.usecases.event.AddEventUseCase;
-import com.unyx.ticketeira.application.usecases.event.GetEventsUseCase;
+import com.unyx.ticketeira.application.usecases.event.AddEventProducerUseCase;
+import com.unyx.ticketeira.application.usecases.event.GetEventsProducerUseCase;
 import com.unyx.ticketeira.config.security.AuthenticatedUser;
-import com.unyx.ticketeira.domain.model.Event;
 import com.unyx.ticketeira.domain.util.SecurityUtils;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/producers")
 public class EventController {
-    private final GetEventsUseCase getEventsUseCase;
-    private final AddEventUseCase addEventUseCase;
+    private final GetEventsProducerUseCase getEventsProducerUseCase;
+    private final AddEventProducerUseCase addEventProducerUseCase;
 
-    public EventController(GetEventsUseCase getEventsUseCase, AddEventUseCase addEventUseCase) {
-        this.getEventsUseCase = getEventsUseCase;
-        this.addEventUseCase = addEventUseCase;
+    public EventController(GetEventsProducerUseCase getEventsProducerUseCase, AddEventProducerUseCase addEventProducerUseCase) {
+        this.getEventsProducerUseCase = getEventsProducerUseCase;
+        this.addEventProducerUseCase = addEventProducerUseCase;
     }
 
     @GetMapping("/me/events")
@@ -36,7 +31,7 @@ public class EventController {
         AuthenticatedUser user = SecurityUtils.getCurrentUser();
 
 
-        return ResponseEntity.ok(getEventsUseCase.execute(user.getId() ,page, limit));
+        return ResponseEntity.ok(getEventsProducerUseCase.execute(user.getId() ,page, limit));
     }
 
     @PostMapping("/me/events")
@@ -44,7 +39,7 @@ public class EventController {
         System.out.println(request);
         AuthenticatedUser user = SecurityUtils.getCurrentUser();
 
-        return ResponseEntity.ok(addEventUseCase.execute(user.getId(),request));
+        return ResponseEntity.ok(addEventProducerUseCase.execute(user.getId(),request));
 
     }
 }
