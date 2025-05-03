@@ -1,10 +1,7 @@
 package com.unyx.ticketeira.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -34,32 +31,20 @@ public class Ticket {
     @JoinColumn(name = "batch_id", nullable = false)
     private Batch batch;
 
-    @Column(nullable = false, unique = true)
-    private String code;
+    private String name;
 
-    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "discount_type", nullable = false)
-    private String discountType;
+    private String price;
 
-    @Column(name = "discount_value", nullable = false)
-    private BigDecimal discountValue;
-
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
-
-    @Column(name = "usage_limit")
-    private Integer usageLimit;
-
-    @Column(name = "usage_count")
-    private Integer usageCount = 0;
+    @Column(name = "service_fee")
+    private String serviceFee;
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+
+    @Column(name = "requires_identification")
+    private Boolean requiresIdentification;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
