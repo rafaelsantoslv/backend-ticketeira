@@ -2,10 +2,13 @@ package com.unyx.ticketeira.domain.util;
 
 import com.unyx.ticketeira.application.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.application.dto.event.EventListAllByProducerResponse;
+import com.unyx.ticketeira.application.dto.sector.SectorCreateRequest;
+import com.unyx.ticketeira.application.dto.sector.SectorListAllByEventResponse;
 import com.unyx.ticketeira.application.dto.user.RegisterRequest;
 import com.unyx.ticketeira.application.dto.user.UpdateUserDTO;
 import com.unyx.ticketeira.domain.model.Event;
 import com.unyx.ticketeira.domain.model.Role;
+import com.unyx.ticketeira.domain.model.Sector;
 import com.unyx.ticketeira.domain.model.User;
 
 import java.util.List;
@@ -83,9 +86,22 @@ public class ConvertDTO {
     }
 
 
-    public static List<EventListAllByProducerResponse> convertListEventToDto(List<Event> events) {
-        return events.stream()
-                .map(ConvertDTO::convertEventToDto)
-                .collect(Collectors.toList());
-    }
+   public static SectorListAllByEventResponse convertSectorToDto(Sector sector) {
+        return new SectorListAllByEventResponse(
+                sector.getId(),
+                sector.getName(),
+                sector.getCapacity(),
+                sector.getDescription()
+        );
+   }
+
+   public static Sector convertSectorToModel(SectorCreateRequest dto){
+        Sector sector = new Sector();
+
+        sector.setName(dto.name());
+        sector.setDescription(dto.description());
+        sector.setCapacity(dto.capacity());
+
+        return sector;
+   }
 }
