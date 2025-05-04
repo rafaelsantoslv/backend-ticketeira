@@ -1,15 +1,14 @@
 package com.unyx.ticketeira.domain.util;
 
+import com.unyx.ticketeira.application.dto.batch.BatchCreateRequest;
+import com.unyx.ticketeira.application.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.application.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.application.dto.event.EventListAllByProducerResponse;
 import com.unyx.ticketeira.application.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.application.dto.sector.SectorListAllByEventResponse;
 import com.unyx.ticketeira.application.dto.user.RegisterRequest;
 import com.unyx.ticketeira.application.dto.user.UpdateUserDTO;
-import com.unyx.ticketeira.domain.model.Event;
-import com.unyx.ticketeira.domain.model.Role;
-import com.unyx.ticketeira.domain.model.Sector;
-import com.unyx.ticketeira.domain.model.User;
+import com.unyx.ticketeira.domain.model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,5 +102,27 @@ public class ConvertDTO {
         sector.setCapacity(dto.capacity());
 
         return sector;
+   }
+
+   public static Batch convertBatchToModel(BatchCreateRequest dto){
+       Batch batch = new Batch();
+
+       batch.setName(dto.name());
+       batch.setQuantity(dto.quantity());
+       batch.setPrice(dto.price());
+       batch.setRequiresIdentification(dto.requiresIdentification());
+
+       return batch;
+   }
+
+   public static BatchCreateResponse convertBatchToDto(Batch batch) {
+        return new BatchCreateResponse(
+                batch.getId(),
+                batch.getName(),
+                batch.getQuantity(),
+                batch.getPrice(),
+                batch.getIsActive(),
+                "Sucess created batch"
+        );
    }
 }

@@ -1,11 +1,14 @@
 package com.unyx.ticketeira.application.controller;
 
+import com.unyx.ticketeira.application.dto.batch.BatchCreateRequest;
+import com.unyx.ticketeira.application.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.application.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.application.dto.event.EventCreateResponse;
 import com.unyx.ticketeira.application.dto.event.EventsResponse;
 import com.unyx.ticketeira.application.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.application.dto.sector.SectorCreateResponse;
 import com.unyx.ticketeira.application.dto.sector.SectorListAllByEventResponse;
+import com.unyx.ticketeira.application.usecases.batch.AddBatchUseCase;
 import com.unyx.ticketeira.application.usecases.event.AddEventProducerUseCase;
 import com.unyx.ticketeira.application.usecases.event.GetEventsProducerUseCase;
 import com.unyx.ticketeira.application.usecases.sector.AddSectorUseCase;
@@ -26,17 +29,20 @@ public class EventController {
     private final AddEventProducerUseCase addEventProducerUseCase;
     private final AddSectorUseCase addSectorUseCase;
     private final GetSectorsUseCase getSectorsUseCase;
+    private final AddBatchUseCase addBatchUseCase;
 
     public EventController(
             GetEventsProducerUseCase getEventsProducerUseCase,
             AddEventProducerUseCase addEventProducerUseCase,
             AddSectorUseCase addSectorUseCase,
-            GetSectorsUseCase getSectorsUseCase
+            GetSectorsUseCase getSectorsUseCase,
+            AddBatchUseCase addBatchUseCase
     ) {
         this.getEventsProducerUseCase = getEventsProducerUseCase;
         this.addEventProducerUseCase = addEventProducerUseCase;
         this.addSectorUseCase = addSectorUseCase;
         this.getSectorsUseCase = getSectorsUseCase;
+        this.addBatchUseCase = addBatchUseCase;
     }
 
     @GetMapping("/me/events")
@@ -69,5 +75,17 @@ public class EventController {
     public ResponseEntity<List<SectorListAllByEventResponse>> getSectorsByEvent(Authentication authentication, @PathVariable String eventId){
         AuthenticatedUser user = SecurityUtils.getCurrentUser();
         return ResponseEntity.ok(getSectorsUseCase.execute(eventId, user.getId()));
+    }
+
+    @PostMapping("/me/events/{eventId}/sectors/{sectorId}/batches")
+    public ResponseEntity<BatchCreateResponse> createBatch(
+            Authentication authentication,
+            @PathVariable String eventId,
+            @PathVariable String sectorId,
+            @RequestBody BatchCreateRequest request
+    ){
+        AuthenticatedUser user = SecurityUtils.getCurrentUser();
+
+        return ResponseEntity.ok(addBatchUseCase.execute(eventId, sectorId, user.getId(), request));
     }
 }

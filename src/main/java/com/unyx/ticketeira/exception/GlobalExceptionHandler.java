@@ -35,6 +35,11 @@ public class GlobalExceptionHandler{
         return buildErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(SectorNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> sectorNotFoundException(SectorNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);

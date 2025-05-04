@@ -8,7 +8,5 @@ import java.util.List;
 
 @Repository
 public interface BatchRepository extends JpaRepository<Batch, String> {
-    List<Batch> findByEventId(String eventId);
-    List<Batch> findByEventIdAndIsActive(String eventId, Boolean isActive);
 
 }
