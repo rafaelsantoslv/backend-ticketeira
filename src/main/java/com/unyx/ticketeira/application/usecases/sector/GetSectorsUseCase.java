@@ -14,12 +14,10 @@ import java.util.List;
 
 @Service
 public class GetSectorsUseCase {
-    private final EventRepository eventRepository;
     private final SectorRepository sectorRepository;
     private final AuthorizationValidator authorizationValidator;
 
-    public GetSectorsUseCase(EventRepository eventRepository, SectorRepository sectorRepository, AuthorizationValidator authorizationValidator) {
-        this.eventRepository = eventRepository;
+    public GetSectorsUseCase( SectorRepository sectorRepository, AuthorizationValidator authorizationValidator) {
         this.sectorRepository = sectorRepository;
         this.authorizationValidator = authorizationValidator;
     }

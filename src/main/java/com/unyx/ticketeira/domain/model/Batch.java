@@ -22,14 +22,11 @@ public class Batch {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "sector_id", nullable = false)
+    private Sector sector;
 
     @Column(nullable = false)
     private String name;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
 
     private Integer quantity;
 
