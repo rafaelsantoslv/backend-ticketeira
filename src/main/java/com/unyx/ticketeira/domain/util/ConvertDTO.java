@@ -2,6 +2,7 @@ package com.unyx.ticketeira.domain.util;
 
 import com.unyx.ticketeira.application.dto.batch.BatchCreateRequest;
 import com.unyx.ticketeira.application.dto.batch.BatchCreateResponse;
+import com.unyx.ticketeira.application.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.application.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.application.dto.event.EventListAllByProducerResponse;
 import com.unyx.ticketeira.application.dto.sector.SectorCreateRequest;
@@ -123,6 +124,16 @@ public class ConvertDTO {
                 batch.getPrice(),
                 batch.getIsActive(),
                 "Sucess created batch"
+        );
+   }
+
+   public static BatchListAllBySector convertBatchListToDto(Batch batch) {
+        return new BatchListAllBySector(
+                batch.getId(),
+                batch.getName(),
+                batch.getQuantity(),
+                batch.getPrice(),
+                batch.getIsActive()
         );
    }
 }
