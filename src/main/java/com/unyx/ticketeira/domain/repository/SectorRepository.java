@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface SectorRepository extends JpaRepository<Sector, String> {
-    List<Sector> findByEventId(String eventId);
+    List<Sector> findAllByEventId(String eventId);
 
 }

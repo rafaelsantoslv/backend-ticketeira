@@ -22,19 +22,21 @@ public class Batch {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "sector_id", nullable = false)
+    private Sector sector;
 
     @Column(nullable = false)
     private String name;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
 
     private Integer quantity;
 
     @Column(name = "is_active")
     private Boolean isActive = false;
+
+    private Double price;
+
+    @Column(name = "requires_identification")
+    private Boolean requiresIdentification;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
