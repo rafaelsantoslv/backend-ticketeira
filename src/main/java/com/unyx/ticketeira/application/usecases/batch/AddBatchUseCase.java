@@ -21,6 +21,7 @@ public class AddBatchUseCase {
     }
 
     public BatchCreateResponse execute(String eventId, String sectorId, String userId, BatchCreateRequest dto){
+        authorizationValidator.validateEventProducer(eventId, userId);
         Sector sectorExists = authorizationValidator.validateEventSector(eventId, sectorId);
 
         Batch newBatch = ConvertDTO.convertBatchToModel(dto);
