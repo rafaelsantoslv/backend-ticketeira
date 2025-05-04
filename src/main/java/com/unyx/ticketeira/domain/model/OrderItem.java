@@ -24,9 +24,6 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-    @ManyToOne
-    @JoinColumn(name = "ticket_id", nullable = false)
-    private Ticket ticket;
     @Column(name = "ticket_code", nullable = false, unique = true)
     private String ticketCode;
     @Column(name = "attendee_name")

@@ -36,6 +36,11 @@ public class Batch {
     @Column(name = "is_active")
     private Boolean isActive = false;
 
+    private Double price;
+
+    @Column(name = "requires_identification")
+    private Boolean requiresIdentification;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
