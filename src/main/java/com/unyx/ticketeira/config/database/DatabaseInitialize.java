@@ -1,7 +1,7 @@
 package com.unyx.ticketeira.config.database;
 
-import com.unyx.ticketeira.domain.model.Role;
-import com.unyx.ticketeira.domain.repository.RoleRepository;
+import com.unyx.ticketeira.model.Role;
+import com.unyx.ticketeira.repository.RoleRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
