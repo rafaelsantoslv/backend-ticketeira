@@ -2,23 +2,30 @@ package com.unyx.ticketeira.application.usecases.event;
 
 import com.unyx.ticketeira.application.dto.PaginationResponse;
 import com.unyx.ticketeira.application.dto.event.EventListAllByProducerResponse;
+import com.unyx.ticketeira.application.dto.event.EventMeListAllByProducerResponse;
 import com.unyx.ticketeira.application.dto.event.EventsResponse;
 import com.unyx.ticketeira.domain.model.Event;
 import com.unyx.ticketeira.domain.repository.EventRepository;
 
 
+import com.unyx.ticketeira.domain.repository.TicketEmissionRepository;
 import com.unyx.ticketeira.domain.util.ConvertDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
 public class GetEventsProducerUseCase {
     private final EventRepository eventRepository;
+
+    @Autowired
+    private TicketEmissionRepository ticketEmissionRepository;
 
     public GetEventsProducerUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
@@ -29,9 +36,23 @@ public class GetEventsProducerUseCase {
 
         Page<Event> eventPage = eventRepository.findAllByCreatorId(userId, PageRequest.of(page, limit));
 
-        List<EventListAllByProducerResponse> events = eventPage.getContent()
-                .stream()
-                .map(ConvertDTO::convertEventToDto)
+        List<String> eventIds = eventPage.getContent().stream()
+                .map(Event::getId)
+                .toList();
+
+        List<Object[]> counts = ticketEmissionRepository.countByEventIds(eventIds, "OK");
+
+        Map<String, Long> soldQuantities = counts.stream()
+                .collect(Collectors.toMap(
+                        row -> (String) row[0],  // eventId
+                        row -> (Long) row[1]     // count
+                ));
+
+        List<EventMeListAllByProducerResponse> events = eventPage.getContent().stream()
+                .map(event -> {
+                    Long soldQuantity = soldQuantities.getOrDefault(event.getId(), 0L);
+                    return ConvertDTO.convertEventToDto(event, soldQuantity);
+                })
                 .toList();
 
         PaginationResponse pagination = new PaginationResponse(

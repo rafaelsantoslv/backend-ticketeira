@@ -5,7 +5,7 @@ import com.unyx.ticketeira.application.dto.PaginationResponse;
 import java.util.List;
 
 public record EventsResponse(
-        List<EventListAllByProducerResponse> events,
+        List<EventMeListAllByProducerResponse> events,
         PaginationResponse pagination
 ) {
 }

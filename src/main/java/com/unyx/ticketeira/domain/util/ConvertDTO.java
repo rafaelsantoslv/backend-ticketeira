@@ -5,6 +5,7 @@ import com.unyx.ticketeira.application.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.application.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.application.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.application.dto.event.EventListAllByProducerResponse;
+import com.unyx.ticketeira.application.dto.event.EventMeListAllByProducerResponse;
 import com.unyx.ticketeira.application.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.application.dto.sector.SectorListAllByEventResponse;
 import com.unyx.ticketeira.application.dto.user.RegisterRequest;
@@ -64,24 +65,19 @@ public class ConvertDTO {
         return event;
     }
 
-    public static EventListAllByProducerResponse convertEventToDto(Event event) {
-        return new EventListAllByProducerResponse(
+    public static EventMeListAllByProducerResponse convertEventToDto(Event event, Long soldQuantity) {
+        return new EventMeListAllByProducerResponse(
                 event.getId(),
                 event.getTitle(),
-                event.getDescription(),
-                event.getAgeRating(),
                 event.getLocationName(),
                 event.getLocationCity(),
-                event.getLocationAddress(),
                 event.getLocationState(),
-                event.getLocationZip(),
                 event.getCategory(),
                 event.getImageUrl(),
                 event.getIsPublished(),
                 event.getIsFeatured(),
-                event.getCreator().getName(),
                 event.getStartDate(),
-                event.getEndDate()
+                soldQuantity
         );
     }
 
