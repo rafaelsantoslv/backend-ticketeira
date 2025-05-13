@@ -10,12 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CheckInRepository extends JpaRepository<CheckIn, String> {
-    List<CheckIn> findByEventId(String eventId);
-    List<CheckIn> findByOrderItem_TicketCode(String ticketCode);
 
-    @Query("SELECT COUNT(c) FROM CheckIn c WHERE c.event.id = :eventId")
-    Long countCheckInsByEvent(@Param("eventId") String eventId);
-
-    @Query("SELECT c.location, COUNT(c) FROM CheckIn c WHERE c.event.id = :eventId GROUP BY c.location")
-    List<Object[]> countCheckInsByLocation(@Param("eventId") String eventId);
 }

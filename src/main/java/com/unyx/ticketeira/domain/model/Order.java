@@ -50,9 +50,6 @@ public class Order {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
-    @Column(name = "coupon_code")
-    private String couponCode;
-
     private String notes;
 
     @Column(name = "ip_address")

@@ -15,34 +15,40 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_items")
+@Table(name = "ticket_emission")
 @EqualsAndHashCode(of = "id")
-public class OrderItem {
+public class TicketEmission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-    @Column(name = "ticket_code", nullable = false, unique = true)
-    private String ticketCode;
+
+    @ManyToOne
+    @JoinColumn(name = "batche_id", nullable = false)
+    private Batch batch;
+
     @Column(name = "attendee_name")
     private String attendeeName;
+
     @Column(name = "attendee_email")
     private String attendeeEmail;
+
     @Column(name = "attendee_document")
     private String attendeeDocument;
+
     @Column(name = "unit_price", nullable = false)
     private BigDecimal unitPrice;
-    @Column(name = "service_fee")
-    private BigDecimal serviceFee = BigDecimal.ZERO;
+
     @Column(nullable = false)
     private String status;
-    @Column(name = "qr_code")
-    private String qrCode;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tickets")
+@Table(name = "coupons")
 @EqualsAndHashCode(of="id")
 public class Coupon {
     @Id
