@@ -30,15 +30,9 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers("/api/auth/**").permitAll()
-
-//                        .requestMatchers("/api/uploads/**").permitAll()
-
                         .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
-
                         .requestMatchers("/api/producers/**").hasRole("PRODUCER")
-
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

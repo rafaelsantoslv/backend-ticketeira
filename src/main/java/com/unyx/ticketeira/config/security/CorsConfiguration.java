@@ -15,7 +15,7 @@ public class CorsConfiguration {
                 registry.addMapping("/**") // aplica para todas as rotas
                         .allowedOrigins("http://localhost:3000", "https://unyxticket.site", "https://www.unyxticket.site")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("Authorization", "Content-Type", "Accept")
+                        .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
