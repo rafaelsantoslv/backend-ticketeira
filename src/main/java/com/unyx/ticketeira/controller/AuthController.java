@@ -9,6 +9,7 @@ import com.unyx.ticketeira.usecases.auth.LoginUserUseCase;
 import com.unyx.ticketeira.usecases.auth.RegisterUserUseCase;
 import com.unyx.ticketeira.config.security.AuthenticatedUser;
 import com.unyx.ticketeira.exception.UnauthorizedException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +40,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        LoginResponse response = loginUserUseCase.execute(request);
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse responseCookie) {
+        LoginResponse response = loginUserUseCase.execute(request, responseCookie);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

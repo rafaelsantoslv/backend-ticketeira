@@ -13,9 +13,9 @@ public class CorsConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // aplica para todas as rotas
-                        .allowedOrigins("http://localhost:3000", "https://unyxticket.site", "https://www.unyxticket.site") // ou use "http://localhost:3000" no dev
+                        .allowedOrigins("http://localhost:3000", "https://unyxticket.site", "https://www.unyxticket.site")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
+                        .allowedHeaders("Authorization", "Content-Type", "Accept")
                         .allowCredentials(true);
             }
         };
