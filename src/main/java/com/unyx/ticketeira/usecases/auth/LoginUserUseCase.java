@@ -42,8 +42,7 @@ public class LoginUserUseCase {
         return new LoginResponse(
                 userExists.getEmail(),
                 userExists.getName(),
-                userExists.getRole().getName(),
-                token
+                userExists.getRole().getName()
         );
     }
 
