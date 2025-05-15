@@ -5,12 +5,14 @@ import com.unyx.ticketeira.dto.user.LoginRequest;
 import com.unyx.ticketeira.dto.user.LoginResponse;
 import com.unyx.ticketeira.dto.user.RegisterResponse;
 import com.unyx.ticketeira.dto.user.RegisterRequest;
+import com.unyx.ticketeira.service.CookieService;
 import com.unyx.ticketeira.usecases.auth.LoginUserUseCase;
 import com.unyx.ticketeira.usecases.auth.RegisterUserUseCase;
 import com.unyx.ticketeira.config.security.AuthenticatedUser;
 import com.unyx.ticketeira.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,9 @@ public class AuthController {
 
     private final RegisterUserUseCase registerUserUseCase;
     private final LoginUserUseCase loginUserUseCase;
+
+    @Autowired
+    private CookieService cookieService;
 
     public AuthController(RegisterUserUseCase registerUserUseCase, LoginUserUseCase loginUserUseCase) {
         this.registerUserUseCase = registerUserUseCase;
@@ -46,21 +51,24 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-        @GetMapping("/validate-token")
-        public ResponseEntity<?> validateToken(Authentication authentication) {
-            if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser)) {
-                throw new UnauthorizedException("Token inválido");
-            }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        cookieService.invalidateAuthCookie(response);
 
-            AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
+        return ResponseEntity.ok().body("");
+    }
 
-            Map<String, String> response = Map.of(
-                    "id", user.getId(),
-                    "email", user.getEmail(),
-                    "role", user.getRole()
-            );
-
-            return ResponseEntity.ok(response);
+    @PostMapping("/validate-token")
+    public ResponseEntity<?> validateToken(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser)) {
+            throw new UnauthorizedException("Token inválido");
         }
-
+        AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
+        Map<String, String> response = Map.of(
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "role", user.getRole()
+        );
+        return ResponseEntity.ok(response);
+    }
 }

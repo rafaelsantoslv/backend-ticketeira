@@ -13,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -27,6 +28,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        if (isPublicRoute(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         String token = extractTokenFromCookie(request, "token");
 
         if (token != null) {
@@ -36,9 +43,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     String userId = jwtUtil.extractUserId(token);
                     String email = jwtUtil.extractEmail(token);
                     String role = jwtUtil.extractRole(token);
+                    String name = jwtUtil.extractName(token);
 
                     // Criar o usuário autenticado
-                    AuthenticatedUser authenticatedUser = new AuthenticatedUser(userId, email, role);
+                    AuthenticatedUser authenticatedUser = new AuthenticatedUser(userId, name, email, role);
 
                     // Criar a autenticação
                     UsernamePasswordAuthenticationToken authentication =
@@ -78,5 +86,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     .orElse(null);
         }
         return null;
+    }
+
+    private static final List<String> publicRoutes = Arrays.asList(
+            "/api/auth/login",
+            "/api/auth/register",
+            "/api/auth/logout"
+    );
+
+    private boolean isPublicRoute(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return publicRoutes.stream().anyMatch(path::startsWith);
     }
 }

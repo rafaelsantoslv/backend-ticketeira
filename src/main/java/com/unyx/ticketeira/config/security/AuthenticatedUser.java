@@ -12,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticatedUser implements UserDetails {
     private final String id;
+    private final String name;
     private final String email;
     private final String role;
 
