@@ -8,6 +8,7 @@ import com.unyx.ticketeira.repository.EventRepository;
 
 
 import com.unyx.ticketeira.repository.TicketEmissionRepository;
+import com.unyx.ticketeira.service.CloudflareStorageService;
 import com.unyx.ticketeira.util.ConvertDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,14 +22,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class GetEventsProducerUseCase {
-    private final EventRepository eventRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Autowired
     private TicketEmissionRepository ticketEmissionRepository;
 
-    public GetEventsProducerUseCase(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
+    @Autowired
+    private CloudflareStorageService cloudflareStorageService;
+
 
     public EventsResponse execute(String userId, int page, int limit) {
         int pageIndex = page - 1;
@@ -49,7 +52,10 @@ public class GetEventsProducerUseCase {
 
         List<EventMeListAllByProducerResponse> events = eventPage.getContent().stream()
                 .map(event -> {
+
                     Long soldQuantity = soldQuantities.getOrDefault(event.getId(), 0L);
+                    String urlImage = cloudflareStorageService.getPublicUrl(event.getImageUrl());
+                    event.setImageUrl(urlImage);
                     return ConvertDTO.convertEventToDto(event, soldQuantity);
                 })
                 .toList();

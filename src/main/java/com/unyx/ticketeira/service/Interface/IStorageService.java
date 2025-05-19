@@ -1,6 +1,8 @@
 package com.unyx.ticketeira.service.Interface;
 
+import com.unyx.ticketeira.model.UploadInfo;
+
 public interface IStorageService {
-    String generateUploadUrl(String objectKey);
+    UploadInfo generateUploadUrl();
     String getPublicUrl(String objectKey);
 }

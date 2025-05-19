@@ -40,7 +40,7 @@ public class ConvertDTO {
 
     }
 
-    public static Event convertEvent(EventCreateRequest dto, User user){
+    public static Event convertEvent(EventCreateRequest dto,String imagemUUID, User user){
         Event event = new Event();
 
         event.setTitle(dto.title());
@@ -54,6 +54,7 @@ public class ConvertDTO {
         event.setCategory(dto.category());
         event.setEndDate(dto.endDate());
         event.setStartDate(dto.startDate());
+        event.setImageUrl(imagemUUID);
         event.setCreator(user);
 
 
