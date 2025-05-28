@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CheckInRepository extends JpaRepository<CheckIn, String> {
-
+    Long countByEventId(String eventId);
 }

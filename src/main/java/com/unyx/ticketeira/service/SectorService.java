@@ -1,26 +1,28 @@
-package com.unyx.ticketeira.usecases.sector;
+package com.unyx.ticketeira.service;
 
 import com.unyx.ticketeira.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.dto.sector.SectorCreateResponse;
+import com.unyx.ticketeira.dto.sector.SectorListAllByEventResponse;
 import com.unyx.ticketeira.model.Event;
 import com.unyx.ticketeira.model.Sector;
 import com.unyx.ticketeira.repository.SectorRepository;
+import com.unyx.ticketeira.service.Interface.ISectorService;
 import com.unyx.ticketeira.util.AuthorizationValidator;
 import com.unyx.ticketeira.util.ConvertDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class AddSectorUseCase {
-    private final SectorRepository sectorRepository;
-    private final AuthorizationValidator authorizationValidator;
+public class SectorService implements ISectorService {
+    @Autowired
+    private SectorRepository sectorRepository;
 
-    public AddSectorUseCase(SectorRepository sectorRepository, AuthorizationValidator authorizationValidator) {
-        this.sectorRepository = sectorRepository;
-        this.authorizationValidator = authorizationValidator;
-    }
+    @Autowired
+    private AuthorizationValidator authorizationValidator;
 
-    public SectorCreateResponse execute(String eventId, String userId, SectorCreateRequest dto){
-
+    public SectorCreateResponse createSector(String eventId, String userId, SectorCreateRequest dto) {
         Event eventExists = authorizationValidator.validateEventProducer(eventId, userId);
 
         Sector newSector = ConvertDTO.convertSectorToModel(dto);
@@ -35,5 +37,11 @@ public class AddSectorUseCase {
                 savedSector.getDescription(),
                 "Success created sector"
         );
+    }
+
+    public List<SectorListAllByEventResponse> listAllSectors(String eventId, String userId){
+        authorizationValidator.validateEventProducer(eventId, userId);
+        List<Sector> sectorList = sectorRepository.findAllByEventId(eventId);
+        return sectorList.stream().map(ConvertDTO::convertSectorToDto).toList();
     }
 }
