@@ -5,7 +5,6 @@ import com.unyx.ticketeira.dto.event.*;
 import com.unyx.ticketeira.exception.UnauthorizedException;
 import com.unyx.ticketeira.exception.UserNotFoundException;
 import com.unyx.ticketeira.model.Event;
-import com.unyx.ticketeira.model.Sector;
 import com.unyx.ticketeira.model.UploadInfo;
 import com.unyx.ticketeira.model.User;
 import com.unyx.ticketeira.repository.*;
@@ -47,7 +46,7 @@ public class EventService implements IEventService {
     private UserRepository userRepository;
 
     @Autowired
-    private CloudflareStorageService cloudflareStorageService;
+    private CloudflareService cloudflareService;
 
 
 
@@ -58,7 +57,7 @@ public class EventService implements IEventService {
             throw new UnauthorizedException("Role incorrect");
         }
 
-        UploadInfo uploadInfo = cloudflareStorageService.generateUploadUrl();
+        UploadInfo uploadInfo = cloudflareService.generateUploadUrl();
 
         Event convertEvent = ConvertDTO.convertEvent(dto, uploadInfo.getObjectKey(), userExists);
 
@@ -88,7 +87,7 @@ public class EventService implements IEventService {
                 .map(event -> {
 
                     Long soldQuantity = soldQuantities.getOrDefault(event.getId(), 0L);
-                    String urlImage = cloudflareStorageService.getPublicUrl(event.getImageUrl());
+                    String urlImage = cloudflareService.getPublicUrl(event.getImageUrl());
                     event.setImageUrl(urlImage);
                     return ConvertDTO.convertEventToDto(event, soldQuantity);
                 })

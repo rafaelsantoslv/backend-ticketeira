@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CloudflareStorageService implements IStorageService {
+public class CloudflareService implements IStorageService {
 
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;

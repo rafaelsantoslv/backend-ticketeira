@@ -6,6 +6,7 @@ import com.unyx.ticketeira.dto.user.LoginResponse;
 import com.unyx.ticketeira.dto.user.RegisterResponse;
 import com.unyx.ticketeira.dto.user.RegisterRequest;
 import com.unyx.ticketeira.service.CookieService;
+import com.unyx.ticketeira.service.Interface.IAuthService;
 import com.unyx.ticketeira.usecases.auth.LoginUserUseCase;
 import com.unyx.ticketeira.usecases.auth.RegisterUserUseCase;
 import com.unyx.ticketeira.config.security.AuthenticatedUser;
@@ -24,31 +25,26 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final RegisterUserUseCase registerUserUseCase;
-    private final LoginUserUseCase loginUserUseCase;
-
     @Autowired
     private CookieService cookieService;
 
-    public AuthController(RegisterUserUseCase registerUserUseCase, LoginUserUseCase loginUserUseCase) {
-        this.registerUserUseCase = registerUserUseCase;
-        this.loginUserUseCase = loginUserUseCase;
+    @Autowired
+    private IAuthService authService;
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse responseCookie) {
+        LoginResponse response = authService.login(request, responseCookie);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) {
 
-        RegisterResponse response = registerUserUseCase.execute(request);
+        RegisterResponse response = authService.register(request);
 
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse responseCookie) {
-        LoginResponse response = loginUserUseCase.execute(request, responseCookie);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
