@@ -4,7 +4,7 @@ import com.unyx.ticketeira.dto.batch.BatchCreateRequest;
 import com.unyx.ticketeira.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.dto.event.EventCreateRequest;
-import com.unyx.ticketeira.dto.event.EventMeListAllByProducerResponse;
+import com.unyx.ticketeira.dto.event.dto.EventListDTO;
 import com.unyx.ticketeira.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.dto.sector.SectorListAllByEventResponse;
 import com.unyx.ticketeira.dto.user.RegisterRequest;
@@ -62,23 +62,6 @@ public class ConvertDTO {
         return event;
     }
 
-    public static EventMeListAllByProducerResponse convertEventToDto(Event event, Long soldQuantity) {
-        return new EventMeListAllByProducerResponse(
-                event.getId(),
-                event.getTitle(),
-                event.getLocationName(),
-                event.getLocationCity(),
-                event.getLocationState(),
-                event.getCategory(),
-                event.getImageUrl(),
-                event.getIsPublished(),
-                event.getIsFeatured(),
-                event.getStartDate(),
-                soldQuantity
-        );
-    }
-
-
    public static SectorListAllByEventResponse convertSectorToDto(Sector sector) {
         return new SectorListAllByEventResponse(
                 sector.getId(),
@@ -129,4 +112,24 @@ public class ConvertDTO {
                 batch.getIsActive()
         );
    }
+
+    public static EventListDTO convertEventToDto(Event event) {
+        return new EventListDTO(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getAgeRating(),
+                event.getLocationName(),
+                event.getLocationCity(),
+                event.getLocationAddress(),
+                event.getLocationState(),
+                event.getLocationZip(),
+                event.getCategory(),
+                event.getImageUrl(),
+                event.getIsPublished(),
+                event.getIsFeatured(),
+                event.getStartDate(),
+                event.getEndDate()
+        );
+    }
 }

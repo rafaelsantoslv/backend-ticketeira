@@ -1,7 +1,11 @@
 package com.unyx.ticketeira.service;
 
-import com.unyx.ticketeira.dto.PaginationResponse;
+import com.unyx.ticketeira.dto.PaginetedResponse;
 import com.unyx.ticketeira.dto.event.*;
+import com.unyx.ticketeira.dto.event.dto.BatchesDTO;
+import com.unyx.ticketeira.dto.event.dto.EventListDTO;
+import com.unyx.ticketeira.dto.event.dto.SectorsDTO;
+import com.unyx.ticketeira.dto.event.dto.SummaryDTO;
 import com.unyx.ticketeira.exception.UnauthorizedException;
 import com.unyx.ticketeira.exception.UserNotFoundException;
 import com.unyx.ticketeira.model.Event;
@@ -16,6 +20,7 @@ import com.unyx.ticketeira.util.ConvertDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,7 +71,7 @@ public class EventService implements IEventService {
         return new EventCreateResponse(addEvent.getId(), uploadInfo.getUploadKey(), "Success created event");
     }
 
-    public EventsResponse listEvents(String userId, int page, int limit) {
+    public PaginetedResponse<EventListDTO> listEventsByProducer(String userId, int page, int limit) {
         int pageIndex = page - 1;
 
         Page<Event> eventPage = eventRepository.findAllByCreatorId(userId, PageRequest.of(page, limit));
@@ -77,29 +82,41 @@ public class EventService implements IEventService {
 
         List<Object[]> counts = ticketEmissionRepository.countByEventIds(eventIds, "OK");
 
-        Map<String, Long> soldQuantities = counts.stream()
-                .collect(Collectors.toMap(
-                        row -> (String) row[0],  // eventId
-                        row -> (Long) row[1]     // count
-                ));
-
-        List<EventMeListAllByProducerResponse> events = eventPage.getContent().stream()
+        List<EventListDTO> eventConvertDto = eventPage.getContent().stream()
                 .map(event -> {
-
-                    Long soldQuantity = soldQuantities.getOrDefault(event.getId(), 0L);
                     String urlImage = cloudflareService.getPublicUrl(event.getImageUrl());
                     event.setImageUrl(urlImage);
-                    return ConvertDTO.convertEventToDto(event, soldQuantity);
+                    return ConvertDTO.convertEventToDto(event);
                 })
                 .toList();
 
-        PaginationResponse pagination = new PaginationResponse(
-                eventPage.getTotalElements(),  // total de registros
-                page,                         // página atual (mantém o número original)
-                limit,                        // itens por página
-                eventPage.getTotalPages()     // total de páginas
+        return new PaginetedResponse<>(
+                eventConvertDto,
+                eventPage.getTotalElements(),
+                page,
+                limit,
+                eventPage.getTotalPages()
         );
-        return new EventsResponse(events, pagination);
+    }
+
+    public PaginetedResponse<EventListDTO> listAllEventsPublished(int page, int limit) {
+        int pageIndex = page - 1;
+
+        Page<Event> eventsPublished = eventRepository.findAllByIsPublished(true, PageRequest.of(page, limit, Sort.by("startDate").ascending()));
+
+        List<EventListDTO> eventConvertDto = eventsPublished.getContent()
+                .stream()
+                .map(ConvertDTO::convertEventToDto)
+                .toList();
+
+        return new PaginetedResponse<>(
+                eventConvertDto,
+                eventsPublished.getTotalElements(),
+                page,
+                limit,
+                eventsPublished.getTotalPages()
+        );
+
     }
 
     public void getDashboardInfo(String eventId) {
@@ -189,5 +206,14 @@ public class EventService implements IEventService {
         });
 
     }
+
+    private Map<String, Long> getSoldQuantities(List<String> eventIds) {
+        List<Object[]> counts = ticketEmissionRepository.countByEventIds(eventIds, "OK");
+        return counts.stream().collect(Collectors.toMap(
+                row -> (String) row[0],
+                row -> (Long) row[1]
+        ));
+    }
+
 
 }

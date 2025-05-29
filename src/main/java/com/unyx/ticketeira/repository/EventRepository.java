@@ -15,10 +15,12 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, String> {
-    List<Event> findByIsPublished(Boolean isPublished);
-    List<Event> findByIsFeatured(Boolean isFeatured);
 
     Page<Event> findAllByCreatorId(String creatorId, Pageable pageable);
+
+    Page<Event> findAllByIsPublished(boolean isPublished, Pageable pageable);
+
+//    Page<Event> findAllByIsPublished(boolean isFeatured, boolean isPublished, Pageable pageable);
 
     @Query("SELECT e FROM Event e WHERE e.startDate >= :now AND e.isPublished = true ORDER BY e.startDate")
     List<Event> findUpcomingEvents(@Param("now") LocalDateTime now);
@@ -28,4 +30,7 @@ public interface EventRepository extends JpaRepository<Event, String> {
 
     @Query("SELECT e FROM Event e WHERE LOWER(e.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(e.description) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Event> search(@Param("query") String query);
+
+
+
 }

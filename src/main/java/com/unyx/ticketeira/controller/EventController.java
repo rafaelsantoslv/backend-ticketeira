@@ -1,11 +1,12 @@
 package com.unyx.ticketeira.controller;
 
+import com.unyx.ticketeira.dto.PaginetedResponse;
 import com.unyx.ticketeira.dto.batch.BatchCreateRequest;
 import com.unyx.ticketeira.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.dto.event.EventCreateResponse;
-import com.unyx.ticketeira.dto.event.EventsResponse;
+import com.unyx.ticketeira.dto.event.dto.EventListDTO;
 import com.unyx.ticketeira.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.dto.sector.SectorCreateResponse;
 import com.unyx.ticketeira.dto.sector.SectorListAllByEventResponse;
@@ -36,14 +37,14 @@ public class EventController {
 
 
     @GetMapping
-    public ResponseEntity<EventsResponse> getEvents(
+    public ResponseEntity<PaginetedResponse<EventListDTO>> getEvents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
         AuthenticatedUser user = SecurityUtils.getCurrentUser();
 
 
-        return ResponseEntity.ok(eventService.listEvents(user.getId() ,page, limit));
+        return ResponseEntity.ok(eventService.listEventsByProducer(user.getId() ,page, limit));
     }
 
     @GetMapping("/{eventId}/dashboard")

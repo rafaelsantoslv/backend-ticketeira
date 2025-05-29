@@ -1,4 +1,4 @@
-package com.unyx.ticketeira.dto.event;
+package com.unyx.ticketeira.dto.event.dto;
 
 public record PaymentMethodsDTO(
         String method,

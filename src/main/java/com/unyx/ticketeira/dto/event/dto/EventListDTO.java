@@ -1,11 +1,8 @@
-package com.unyx.ticketeira.dto.event;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+package com.unyx.ticketeira.dto.event.dto;
 
 import java.time.LocalDateTime;
 
-public record EventListAllByProducerResponse(
+public record EventListDTO(
         String id,
         String title,
         String description,
@@ -19,9 +16,7 @@ public record EventListAllByProducerResponse(
         String imageUrl,
         boolean isPublished,
         boolean isFeatured,
-        String creator,
         LocalDateTime startDate,
         LocalDateTime endDate
-
 ) {
 }

@@ -7,8 +7,6 @@ import com.unyx.ticketeira.dto.user.RegisterResponse;
 import com.unyx.ticketeira.dto.user.RegisterRequest;
 import com.unyx.ticketeira.service.CookieService;
 import com.unyx.ticketeira.service.Interface.IAuthService;
-import com.unyx.ticketeira.usecases.auth.LoginUserUseCase;
-import com.unyx.ticketeira.usecases.auth.RegisterUserUseCase;
 import com.unyx.ticketeira.config.security.AuthenticatedUser;
 import com.unyx.ticketeira.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;

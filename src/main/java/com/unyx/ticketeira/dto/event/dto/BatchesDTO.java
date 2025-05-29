@@ -1,4 +1,4 @@
-package com.unyx.ticketeira.dto.event;
+package com.unyx.ticketeira.dto.event.dto;
 
 public record BatchesDTO(
         String id,
