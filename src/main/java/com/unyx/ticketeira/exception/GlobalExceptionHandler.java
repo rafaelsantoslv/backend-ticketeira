@@ -50,6 +50,10 @@ public class GlobalExceptionHandler{
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(BatchNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleBatchNotFoundException(BatchNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<Map<String, Object>> handleMalformedJwtException(MalformedJwtException ex) {

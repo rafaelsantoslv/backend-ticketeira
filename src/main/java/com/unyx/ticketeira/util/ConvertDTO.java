@@ -2,14 +2,18 @@ package com.unyx.ticketeira.util;
 
 import com.unyx.ticketeira.dto.batch.BatchCreateRequest;
 import com.unyx.ticketeira.dto.batch.BatchCreateResponse;
+import com.unyx.ticketeira.dto.batch.BatchDTO;
 import com.unyx.ticketeira.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.dto.event.EventCreateRequest;
-import com.unyx.ticketeira.dto.event.dto.EventListDTO;
+import com.unyx.ticketeira.dto.event.dto.EventDTO;
 import com.unyx.ticketeira.dto.sector.SectorCreateRequest;
+import com.unyx.ticketeira.dto.sector.SectorDTO;
 import com.unyx.ticketeira.dto.sector.SectorListAllByEventResponse;
 import com.unyx.ticketeira.dto.user.RegisterRequest;
 import com.unyx.ticketeira.dto.user.UpdateUserDTO;
 import com.unyx.ticketeira.model.*;
+
+import java.util.List;
 
 public class ConvertDTO {
 
@@ -62,7 +66,7 @@ public class ConvertDTO {
         return event;
     }
 
-   public static SectorListAllByEventResponse convertSectorToDto(Sector sector) {
+    public static SectorListAllByEventResponse convertSectorToDto(Sector sector) {
         return new SectorListAllByEventResponse(
                 sector.getId(),
                 sector.getName(),
@@ -71,7 +75,7 @@ public class ConvertDTO {
         );
    }
 
-   public static Sector convertSectorToModel(SectorCreateRequest dto){
+    public static Sector convertSectorToModel(SectorCreateRequest dto){
         Sector sector = new Sector();
 
         sector.setName(dto.name());
@@ -81,7 +85,7 @@ public class ConvertDTO {
         return sector;
    }
 
-   public static Batch convertBatchToModel(BatchCreateRequest dto){
+    public static Batch convertBatchToModel(BatchCreateRequest dto){
        Batch batch = new Batch();
 
        batch.setName(dto.name());
@@ -92,7 +96,7 @@ public class ConvertDTO {
        return batch;
    }
 
-   public static BatchCreateResponse convertBatchToDto(Batch batch) {
+    public static BatchCreateResponse convertBatchToDto(Batch batch) {
         return new BatchCreateResponse(
                 batch.getId(),
                 batch.getName(),
@@ -103,7 +107,7 @@ public class ConvertDTO {
         );
    }
 
-   public static BatchListAllBySector convertBatchListToDto(Batch batch) {
+    public static BatchListAllBySector convertBatchListToDto(Batch batch) {
         return new BatchListAllBySector(
                 batch.getId(),
                 batch.getName(),
@@ -113,8 +117,8 @@ public class ConvertDTO {
         );
    }
 
-    public static EventListDTO convertEventToDto(Event event) {
-        return new EventListDTO(
+    public static EventDTO convertEventToDto(Event event) {
+        return new EventDTO(
                 event.getId(),
                 event.getTitle(),
                 event.getDescription(),
@@ -132,4 +136,23 @@ public class ConvertDTO {
                 event.getEndDate()
         );
     }
+
+    public static BatchDTO convertBatchRespToDto(Batch batch) {
+        return new BatchDTO(
+                batch.getName(),
+                batch.getPrice(),
+                batch.getIsActive()
+        );
+    }
+
+    public static SectorDTO convertSectorRespToDto(Sector sector, List<BatchDTO> batchDTOs) {
+        return new SectorDTO(
+            sector.getName(),
+            sector.getDescription(),
+                batchDTOs
+        );
+    }
+
+
+
 }

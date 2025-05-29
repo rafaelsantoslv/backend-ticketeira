@@ -2,7 +2,7 @@ package com.unyx.ticketeira.dto.event.dto;
 
 import java.time.LocalDateTime;
 
-public record EventListDTO(
+public record EventDTO(
         String id,
         String title,
         String description,

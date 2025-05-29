@@ -6,7 +6,7 @@ import com.unyx.ticketeira.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.dto.event.EventCreateResponse;
-import com.unyx.ticketeira.dto.event.dto.EventListDTO;
+import com.unyx.ticketeira.dto.event.dto.EventDTO;
 import com.unyx.ticketeira.dto.sector.SectorCreateRequest;
 import com.unyx.ticketeira.dto.sector.SectorCreateResponse;
 import com.unyx.ticketeira.dto.sector.SectorListAllByEventResponse;
@@ -37,7 +37,7 @@ public class EventController {
 
 
     @GetMapping
-    public ResponseEntity<PaginetedResponse<EventListDTO>> getEvents(
+    public ResponseEntity<PaginetedResponse<EventDTO>> getEvents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
@@ -47,10 +47,10 @@ public class EventController {
         return ResponseEntity.ok(eventService.listEventsByProducer(user.getId() ,page, limit));
     }
 
-    @GetMapping("/{eventId}/dashboard")
-    public void getDataDashboard(@PathVariable String eventId) {
-        eventService.getDashboardInfo(eventId);
-    }
+//    @GetMapping("/{eventId}/dashboard")
+//    public void getDataDashboard(@PathVariable String eventId) {
+//        eventService.getDashboardInfo(eventId);
+//    }
 
     @PostMapping
     public ResponseEntity<EventCreateResponse> createEvent(

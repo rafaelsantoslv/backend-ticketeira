@@ -8,9 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SectorRepository extends JpaRepository<Sector, String> {
+
+    List<Sector> findByEventId(String eventId);
+
     List<Sector> findAllByEventId(String eventId);
 
     @Query(value = """

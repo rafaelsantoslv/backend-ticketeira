@@ -1,11 +1,10 @@
-package com.unyx.ticketeira.dto.event.dto;
+package com.unyx.ticketeira.dto.sector;
 
 import com.unyx.ticketeira.dto.batch.BatchDTO;
 
 import java.util.List;
 
-public record SectorsDTO(
-        String id,
+public record SectorDTO(
         String name,
         String description,
         List<BatchDTO> batches
