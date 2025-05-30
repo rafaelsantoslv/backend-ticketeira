@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ticket_emission")
+@Table(name = "ticket")
 @EqualsAndHashCode(of = "id")
-public class TicketEmission {
+public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

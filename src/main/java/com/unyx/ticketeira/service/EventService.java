@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class EventService implements IEventService {
     @Autowired
-    private TicketEmissionRepository ticketEmissionRepository;
+    private TicketRepository ticketRepository;
 
     @Autowired
     private SectorRepository sectorRepository;
@@ -79,7 +79,7 @@ public class EventService implements IEventService {
                 .map(Event::getId)
                 .toList();
 
-        List<Object[]> counts = ticketEmissionRepository.countByEventIds(eventIds, "OK");
+        List<Object[]> counts = ticketRepository.countByEventIds(eventIds, "OK");
 
         List<EventDTO> eventConvertDto = eventPage.getContent().stream()
                 .map(event -> {
@@ -240,7 +240,7 @@ public class EventService implements IEventService {
 //    }
 
     private Map<String, Long> getSoldQuantities(List<String> eventIds) {
-        List<Object[]> counts = ticketEmissionRepository.countByEventIds(eventIds, "OK");
+        List<Object[]> counts = ticketRepository.countByEventIds(eventIds, "OK");
         return counts.stream().collect(Collectors.toMap(
                 row -> (String) row[0],
                 row -> (Long) row[1]

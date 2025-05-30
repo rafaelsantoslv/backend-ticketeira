@@ -55,6 +55,11 @@ public class GlobalExceptionHandler{
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CouponNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleCouponNotFoundException(CouponNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<Map<String, Object>> handleMalformedJwtException(MalformedJwtException ex) {
         return buildErrorResponse("Token JWT malformado ou inválido.", HttpStatus.UNAUTHORIZED);

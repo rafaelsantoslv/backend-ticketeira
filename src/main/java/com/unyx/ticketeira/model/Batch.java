@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,7 +34,7 @@ public class Batch {
     @Column(name = "is_active")
     private Boolean isActive = false;
 
-    private Double price;
+    private BigDecimal price;
 
     @Column(name = "requires_identification")
     private Boolean requiresIdentification;

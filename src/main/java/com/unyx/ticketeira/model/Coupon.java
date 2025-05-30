@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -28,13 +29,23 @@ public class Coupon {
 
     @Column(nullable = false)
     private String code;
-    private String description;
-    private String discountType;
-    private String discountValue;
-    private int usageLimit;
-    private int usageCount;
-    private boolean isActive;
 
+    private String description;
+
+    @Column(name = "discount_type")
+    private String discountType;
+
+    @Column(name = "discount_value")
+    private BigDecimal discountValue;
+
+    @Column(name = "usage_limit")
+    private int usageLimit;
+
+    @Column(name = "usage_count")
+    private int usageCount;
+
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

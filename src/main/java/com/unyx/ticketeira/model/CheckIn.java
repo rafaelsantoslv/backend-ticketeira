@@ -20,8 +20,8 @@ public class CheckIn {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_emission", nullable = false)
-    private TicketEmission ticketEmission;
+    @JoinColumn(name = "ticket_id", nullable = false)
+    private Ticket ticket;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)

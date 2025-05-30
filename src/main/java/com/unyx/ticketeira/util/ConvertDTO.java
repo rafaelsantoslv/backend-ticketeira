@@ -139,6 +139,7 @@ public class ConvertDTO {
 
     public static BatchDTO convertBatchRespToDto(Batch batch) {
         return new BatchDTO(
+                batch.getId(),
                 batch.getName(),
                 batch.getPrice(),
                 batch.getIsActive()
@@ -147,9 +148,10 @@ public class ConvertDTO {
 
     public static SectorDTO convertSectorRespToDto(Sector sector, List<BatchDTO> batchDTOs) {
         return new SectorDTO(
+            sector.getId(),
             sector.getName(),
             sector.getDescription(),
-                batchDTOs
+            batchDTOs
         );
     }
 

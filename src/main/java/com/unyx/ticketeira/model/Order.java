@@ -26,18 +26,8 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
-
-    @Column(name = "order_number", nullable = false, unique = true)
-    private String orderNumber;
-
     @Column(nullable = false)
     private String status;
-
-    @Column(nullable = false)
-    private BigDecimal subtotal;
 
     private BigDecimal discount = BigDecimal.ZERO;
 
@@ -51,12 +41,6 @@ public class Order {
     private Coupon coupon;
 
     private String notes;
-
-    @Column(name = "ip_address")
-    private String ipAddress;
-
-    @Column(name = "user_agent")
-    private String userAgent;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
