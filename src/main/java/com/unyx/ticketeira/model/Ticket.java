@@ -1,5 +1,6 @@
 package com.unyx.ticketeira.model;
 
+import com.unyx.ticketeira.model.enums.StatusTicket;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,27 +24,11 @@ public class Ticket {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
-
-    @ManyToOne
-    @JoinColumn(name = "batche_id", nullable = false)
-    private Batch batch;
-
-    @Column(name = "attendee_name")
-    private String attendeeName;
-
-    @Column(name = "attendee_email")
-    private String attendeeEmail;
-
-    @Column(name = "attendee_document")
-    private String attendeeDocument;
-
-    @Column(name = "unit_price", nullable = false)
-    private BigDecimal unitPrice;
+    @JoinColumn(name = "order_item_id", nullable = false)
+    private OrderItem orderItem;
 
     @Column(nullable = false)
-    private String status;
+    private StatusTicket status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

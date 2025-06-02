@@ -3,17 +3,11 @@ package com.unyx.ticketeira.service;
 import com.unyx.ticketeira.dto.PaginetedResponse;
 import com.unyx.ticketeira.dto.batch.BatchDTO;
 import com.unyx.ticketeira.dto.event.*;
-import com.unyx.ticketeira.dto.event.dto.BatchesDTO;
 import com.unyx.ticketeira.dto.event.dto.EventDTO;
-import com.unyx.ticketeira.dto.event.dto.SectorsDTO;
-import com.unyx.ticketeira.dto.event.dto.SummaryDTO;
 import com.unyx.ticketeira.dto.sector.SectorDTO;
 import com.unyx.ticketeira.exception.*;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
-import com.unyx.ticketeira.repository.projection.PaymentMethodSummaryProjection;
-import com.unyx.ticketeira.repository.projection.SectorBatchProjection;
-import com.unyx.ticketeira.repository.projection.SummaryProjection;
 import com.unyx.ticketeira.service.Interface.IEventService;
 import com.unyx.ticketeira.util.ConvertDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class EventService implements IEventService {
@@ -79,7 +72,7 @@ public class EventService implements IEventService {
                 .map(Event::getId)
                 .toList();
 
-        List<Object[]> counts = ticketRepository.countByEventIds(eventIds, "OK");
+//        List<Object[]> counts = ticketRepository.countByEventIds(eventIds, "OK");
 
         List<EventDTO> eventConvertDto = eventPage.getContent().stream()
                 .map(event -> {
@@ -239,13 +232,13 @@ public class EventService implements IEventService {
 //
 //    }
 
-    private Map<String, Long> getSoldQuantities(List<String> eventIds) {
-        List<Object[]> counts = ticketRepository.countByEventIds(eventIds, "OK");
-        return counts.stream().collect(Collectors.toMap(
-                row -> (String) row[0],
-                row -> (Long) row[1]
-        ));
-    }
+//    private Map<String, Long> getSoldQuantities(List<String> eventIds) {
+//        List<Object[]> counts = ticketRepository.countByEventIds(eventIds, "OK");
+//        return counts.stream().collect(Collectors.toMap(
+//                row -> (String) row[0],
+//                row -> (Long) row[1]
+//        ));
+//    }
 
 
 }
