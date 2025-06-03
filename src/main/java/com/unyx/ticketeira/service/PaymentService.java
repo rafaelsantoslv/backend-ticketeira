@@ -1,8 +1,13 @@
 package com.unyx.ticketeira.service;
 
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
 import com.unyx.ticketeira.dto.payment.CardPaymentPayload;
 import com.unyx.ticketeira.dto.payment.CardPaymentResponse;
+import com.unyx.ticketeira.dto.payment.PixPaymentPayload;
+import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
 import com.unyx.ticketeira.model.*;
+import com.unyx.ticketeira.service.Interface.IGatewayPagamento;
 import com.unyx.ticketeira.service.Interface.IOrderService;
 import com.unyx.ticketeira.service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +24,9 @@ public class PaymentService {
     private IUserService userService;
 
     @Autowired
-    private MercadoPagoService mercadoPagoService;
+    private IGatewayPagamento gatewayPagamento;
 
-    public CardPaymentResponse processCardPayment(String orderId, String userId, String cardToken) {
+    public CardPaymentResponse processCardPayment(String orderId, String userId, String cardToken) throws MPException, MPApiException {
         Order order = orderService.validateOrderAndGetOrder(orderId);
         User user = userService.validateUserAndGetUser(userId);
 
@@ -34,6 +39,21 @@ public class PaymentService {
                 cardToken
         );
 
-        retur
+        return gatewayPagamento.createCardPayment(payload);
+    }
+
+    public PixPaymentResponse processPixPayment(String orderId, String userId) throws MPException, MPApiException {
+        Order order = orderService.validateOrderAndGetOrder(orderId);
+        User user = userService.validateUserAndGetUser(userId);
+
+        PixPaymentPayload payload = new PixPaymentPayload(
+                order.getTotal(),
+                user.getEmail(),
+                user.getName(),
+                user.getName(),
+                user.getDocument(),
+                ("pagamento da order " + order.getId())
+        );
+        return  gatewayPagamento.createPixPayment(payload);
     }
 }

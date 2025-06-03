@@ -1,6 +1,5 @@
 package com.unyx.ticketeira.service;
 
-import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.MercadoPagoClient;
 import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
@@ -14,17 +13,16 @@ import com.unyx.ticketeira.dto.payment.CardPaymentPayload;
 import com.unyx.ticketeira.dto.payment.CardPaymentResponse;
 import com.unyx.ticketeira.dto.payment.PixPaymentPayload;
 import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
-import com.unyx.ticketeira.model.User;
+import com.unyx.ticketeira.service.Interface.IGatewayPagamento;
 import com.unyx.ticketeira.service.Interface.IOrderService;
 import com.unyx.ticketeira.service.Interface.IUserService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class MercadoPagoService {
+public class MercadoPagoService implements IGatewayPagamento {
     @Autowired
     private MercadoPagoClient mercadoPagoClient;
 
@@ -42,33 +40,17 @@ public class MercadoPagoService {
 
 
 
-    public PixPaymentResponse createPixPayment(String orderId, String userId) throws MPException, MPApiException {
-        com.unyx.ticketeira.model.Order order = orderService.validateOrderAndGetOrder(orderId);
+    public PixPaymentResponse createPixPayment(PixPaymentPayload payload) throws MPException, MPApiException {
 
-        User userExist = userService.validateUserAndGetUser(userId);
-
-        System.out.println(userExist.getEmail());
-        System.out.println(userExist.getDocument());
-
-        PixPaymentPayload pixPaymentPayload = new PixPaymentPayload(
-                order.getTotal(),
-                userExist.getEmail(),
-                userExist.getName(),
-                userExist.getName(),
-                userExist.getDocument(),
-                ("pagamento da order " + order.getId())
-        );
-
-//        PaymentClient client = new PaymentClient();
 
         PaymentCreateRequest request = PaymentCreateRequest.builder()
-                .transactionAmount(pixPaymentPayload.amount())
+                .transactionAmount(payload.amount())
                 .description("Pagamento de ingresso")
                 .paymentMethodId("pix")
                 .payer(PaymentPayerRequest.builder()
-                        .email(userExist.getEmail())
-                        .firstName(userExist.getName())
-                        .lastName(userExist.getName())
+                        .email(payload.email())
+                        .firstName(payload.firstName())
+                        .lastName(payload.lastName())
                         .build())
                 .build();
 
@@ -79,9 +61,11 @@ public class MercadoPagoService {
         Payment payment = paymentClient.create(request, requestOptions);
 
         return new PixPaymentResponse(
-                payment.getId().toString(),
-                order.getId(),
-                payment.getStatus(), payment.getPointOfInteraction().getTransactionData().getQrCodeBase64(),
+                payment.getStatus(),
+                payment.getId(),
+                payment.getTransactionAmount(),
+                payment.getPaymentMethodId(),
+                payment.getPointOfInteraction().getTransactionData().getQrCodeBase64(),
                 payment.getPointOfInteraction().getTransactionData().getQrCode()
         );
     }
