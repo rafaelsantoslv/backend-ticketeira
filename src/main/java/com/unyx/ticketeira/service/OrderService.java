@@ -69,7 +69,7 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 
             // Cria e salva o pedido
             Order order = new Order();
-            order.setStatus("Valido");
+            order.setStatus("PENDING");
             order.setUser(userExists);
             order.setDiscount(discount);
             order.setFees(fee);
@@ -96,26 +96,17 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
             );
         }
 
-//        private Event validateEvent(String eventId) {
-//            Event event = eventRepository.findById(eventId)
-//                    .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
-//            if (!event.getIsPublished()) {
-//                throw new AccessDeniedException(EVENT_ACCESS_DENIED);
-//            }
-//            return event;
-//        }
+        public Order validateOrderAndGetOrder(String orderId) {
+            Order orderExists = orderRepository.findById(orderId).orElseThrow(
+                    () -> new OrderNotFoundException(ORDER_NOT_FOUND)
+            );
+            if(!orderExists.getStatus().equals("PENDING")) {
+                throw new AccessDeniedException(ORDER_ACCESS_DENIED);
+            }
+            return orderExists;
+        }
 
-//        private Coupon validateAndGetCoupon(String couponCode) {
-//            if (couponCode == null || couponCode.isBlank()) {
-//                return null;
-//            }
-//            Coupon coupon = couponRepository.findByCode(couponCode)
-//                    .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_FOUND));
-//            if (coupon.getUsageCount() >= coupon.getUsageLimit()) {
-//                throw new CouponNotFoundException(COUPON_ACCESS_DENIED);
-//            }
-//            return coupon;
-//        }
+
 
         private List<OrderItem> buildOrderItems(List<OrderItemRequest> items) {
             return items.stream().map(item -> {
