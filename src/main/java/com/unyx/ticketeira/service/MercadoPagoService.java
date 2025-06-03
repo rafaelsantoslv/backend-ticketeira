@@ -2,14 +2,11 @@ package com.unyx.ticketeira.service;
 
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.MercadoPagoClient;
-import com.mercadopago.client.order.*;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
-import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
-import com.mercadopago.resources.order.Order;
 import com.mercadopago.resources.payment.Payment;
 import com.unyx.ticketeira.dto.payment.PixPaymentPayload;
 import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
@@ -33,13 +30,9 @@ public class MercadoPagoService {
     @Autowired
     private IUserService userService;
 
-    @Value("${mercadopago.accessToken}")
-    private String accessToken;
+    @Autowired
+    private PaymentClient paymentClient;
 
-    @PostConstruct
-    public void init() {
-        MercadoPagoConfig.setAccessToken(accessToken);
-    }
 
 
     public PixPaymentResponse createPixPayment(String orderId, String userId) throws MPException, MPApiException {
@@ -56,7 +49,7 @@ public class MercadoPagoService {
                 ("pagamento da order " + order.getId())
         );
 
-        PaymentClient client = new PaymentClient();
+//        PaymentClient client = new PaymentClient();
 
         PaymentCreateRequest request = PaymentCreateRequest.builder()
                 .transactionAmount(pixPaymentPayload.amount())
@@ -69,7 +62,7 @@ public class MercadoPagoService {
                         .build())
                 .build();
 
-        Payment payment = client.create(request);
+        Payment payment = paymentClient.create(request);
 
         return new PixPaymentResponse(
                 payment.getId().toString(),
