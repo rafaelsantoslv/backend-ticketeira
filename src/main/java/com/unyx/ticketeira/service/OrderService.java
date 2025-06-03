@@ -1,8 +1,12 @@
 package com.unyx.ticketeira.service;
 
+import com.unyx.ticketeira.dto.order.OrderItemRequest;
+import com.unyx.ticketeira.dto.order.OrderRequest;
+import com.unyx.ticketeira.dto.order.OrderResponse;
 import com.unyx.ticketeira.exception.*;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
+import com.unyx.ticketeira.service.Interface.IOrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +16,7 @@ import java.util.List;
 
 
     @Service
-    public class OrderService {
+    public class OrderService implements IOrderService {
         @Autowired
         private EventRepository eventRepository;
 
@@ -31,18 +35,22 @@ import java.util.List;
         @Autowired
         private OrderItemRepository orderItemRepository;
 
+        @Autowired
+        private UserRepository userRepository;
+
         @Transactional
-        public Order createOrder(
-                User user,
-                String eventId,
-                List<OrderItemRequest> items,
-                String couponCode
+        public OrderResponse createOrder(
+                String userId,
+                OrderRequest request
         ) {
-            Event event = validateEvent(eventId);
-            Coupon coupon = validateAndGetCoupon(couponCode);
+            User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User incorrect"));
+
+
+            Event event = validateEvent(request.eventId());
+            Coupon coupon = validateAndGetCoupon(request.coupon());
 
             // Monta os itens do pedido e valida setor/lote
-            List<OrderItem> orderItems = buildOrderItems(items);
+            List<OrderItem> orderItems = buildOrderItems(request.items());
 
             // Calcula o total antes do desconto
             BigDecimal totalBeforeDiscount = calculateTotal(orderItems);
@@ -60,11 +68,13 @@ import java.util.List;
             // Cria e salva o pedido
             Order order = new Order();
             order.setStatus("Valido");
-            order.setUser(user);
+            order.setUser(userExists);
             order.setDiscount(discount);
             order.setFees(fee);
             order.setTotal(finalAmount);
             order.setCoupon(coupon);
+
+
 
             orderRepository.save(order);
 
@@ -80,7 +90,11 @@ import java.util.List;
                 couponRepository.save(coupon);
             }
 
-            return order;
+            return OrderResponse.from(
+                    order.getTotal(),
+                    order.getFees(),
+                    order.getId()
+            );
         }
 
         private Event validateEvent(String eventId) {
@@ -106,10 +120,10 @@ import java.util.List;
 
         private List<OrderItem> buildOrderItems(List<OrderItemRequest> items) {
             return items.stream().map(item -> {
-                Sector sector = sectorRepository.findById(item.getSectorId())
-                        .orElseThrow(() -> new SectorNotFoundException("Setor não encontrado: " + item.getSectorId()));
-                Batch batch = batchRepository.findById(item.getBatchId())
-                        .orElseThrow(() -> new BatchNotFoundException("Lote não encontrado: " + item.getBatchId()));
+                Sector sector = sectorRepository.findById(item.sectorId())
+                        .orElseThrow(() -> new SectorNotFoundException("Setor não encontrado: " + item.sectorId()));
+                Batch batch = batchRepository.findById(item.batchId())
+                        .orElseThrow(() -> new BatchNotFoundException("Lote não encontrado: " + item.batchId()));
 
                 return getOrderItem(item, batch, sector);
             }).toList();
@@ -117,17 +131,18 @@ import java.util.List;
 
         private static OrderItem getOrderItem(OrderItemRequest item, Batch batch, Sector sector) {
             if (!batch.getIsActive()) {
-                throw new AccessDeniedException("Lote inativo: " + item.getBatchId());
+                throw new AccessDeniedException("Lote inativo: " + item.batchId());
             }
             BigDecimal unitPrice = batch.getPrice();
-            BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+            BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(item.quantity()));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setSector(sector);
             orderItem.setBatch(batch);
             orderItem.setUnitPrice(unitPrice);
-            orderItem.setQuantity(item.getQuantity());
+            orderItem.setQuantity(item.quantity());
             orderItem.setSubtotal(subtotal);
+
             return orderItem;
         }
 
