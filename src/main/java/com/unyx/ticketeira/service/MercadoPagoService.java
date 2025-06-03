@@ -2,6 +2,7 @@ package com.unyx.ticketeira.service;
 
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.MercadoPagoClient;
+import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
@@ -9,6 +10,8 @@ import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
+import com.unyx.ticketeira.dto.payment.CardPaymentPayload;
+import com.unyx.ticketeira.dto.payment.CardPaymentResponse;
 import com.unyx.ticketeira.dto.payment.PixPaymentPayload;
 import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
 import com.unyx.ticketeira.model.User;
@@ -80,6 +83,38 @@ public class MercadoPagoService {
                 order.getId(),
                 payment.getStatus(), payment.getPointOfInteraction().getTransactionData().getQrCodeBase64(),
                 payment.getPointOfInteraction().getTransactionData().getQrCode()
+        );
+    }
+
+    public CardPaymentResponse createCardPayment(CardPaymentPayload payload) throws MPException, MPApiException {
+
+        PaymentCreateRequest request = PaymentCreateRequest.builder()
+                .transactionAmount(payload.amount())
+                .description("Pagamento de ingresso")
+                .installments(1)
+                .token(payload.token())
+                .payer(PaymentPayerRequest.builder()
+                        .email(payload.email())
+                        .identification(IdentificationRequest.builder()
+                                .type("CPF")
+                                .number(payload.cpf()).build())
+                        .firstName(payload.firstName())
+                        .lastName(payload.firstName())
+                        .build())
+                .build();
+
+        MPRequestOptions requestOptions = MPRequestOptions.builder()
+                .accessToken(accessToken)
+                .build();
+
+        Payment payment = paymentClient.create(request, requestOptions);
+
+        return new CardPaymentResponse(
+                payment.getStatus(),
+                payment.getId(),
+                payment.getTransactionAmount(),
+                payment.getPaymentMethodId(),
+                payment.getStatusDetail()
         );
     }
 
