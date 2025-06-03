@@ -32,18 +32,6 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
         private IBatchService batchService;
 
         @Autowired
-        private EventRepository eventRepository;
-
-        @Autowired
-        private SectorRepository sectorRepository;
-
-        @Autowired
-        private BatchRepository batchRepository;
-
-        @Autowired
-        private CouponRepository couponRepository;
-
-        @Autowired
         private OrderRepository orderRepository;
 
         @Autowired
