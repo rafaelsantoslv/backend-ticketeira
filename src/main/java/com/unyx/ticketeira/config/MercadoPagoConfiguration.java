@@ -15,6 +15,7 @@ public class MercadoPagoConfiguration {
 
     @Bean
     public PaymentClient paymentClient() {
+        System.out.println(accessToken);
         MercadoPagoConfig.setAccessToken(accessToken);
         return new PaymentClient();
     }

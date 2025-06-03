@@ -5,6 +5,7 @@ import com.mercadopago.client.MercadoPagoClient;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
@@ -33,12 +34,18 @@ public class MercadoPagoService {
     @Autowired
     private PaymentClient paymentClient;
 
+    @Value("${mercadopago.accessToken}")
+    private String accessToken;
+
 
 
     public PixPaymentResponse createPixPayment(String orderId, String userId) throws MPException, MPApiException {
         com.unyx.ticketeira.model.Order order = orderService.validateOrderAndGetOrder(orderId);
 
         User userExist = userService.validateUserAndGetUser(userId);
+
+        System.out.println(userExist.getEmail());
+        System.out.println(userExist.getDocument());
 
         PixPaymentPayload pixPaymentPayload = new PixPaymentPayload(
                 order.getTotal(),
@@ -62,7 +69,11 @@ public class MercadoPagoService {
                         .build())
                 .build();
 
-        Payment payment = paymentClient.create(request);
+        MPRequestOptions requestOptions = MPRequestOptions.builder()
+                .accessToken(accessToken)
+                .build();
+
+        Payment payment = paymentClient.create(request, requestOptions);
 
         return new PixPaymentResponse(
                 payment.getId().toString(),

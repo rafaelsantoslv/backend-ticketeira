@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/webhook")
+@RequestMapping("/api/v1/webhook")
 public class WebHookController {
     public ResponseEntity<Void> mercadoPagoWebHook(@RequestBody Map<String, Object> payload) {
         System.out.println("Webhook recebido: " + payload);
