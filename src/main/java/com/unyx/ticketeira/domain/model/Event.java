@@ -1,10 +1,11 @@
 package com.unyx.ticketeira.domain.model;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -23,12 +24,35 @@ public class Event {
 
     private String description;
 
-    @Column(name = "name_locale")
-    private String nameLocale;
+    @Column(name = "location_name")
+    private String locationName;
 
-    private String address;
+    @Column(name = "age_rating")
+    private String ageRating;
 
-    private String classification;
+    @Column(name = "start_date", nullable = false)
+    private LocalDateTime startDate;
+
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
+
+    @Column(name = "location_city")
+    private String locationCity;
+
+    @Column(name = "location_address")
+    private String locationAddress;
+
+    @Column(name = "location_state")
+    private String locationState;
+
+    @Column(name = "location_zip")
+    private String locationZip;
+
+    @Column(name = "is_published")
+    private Boolean isPublished = false;
+
+    @Column(name = "is_featured")
+    private Boolean isFeatured = false;
 
     private String category;
 
@@ -38,7 +62,15 @@ public class Event {
     @Column(name = "event_date")
     private LocalDateTime eventDate;
 
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToOne
-    @JoinColumn(name = "producer_id")
-    private User producer;
+    @JoinColumn(name = "creator_id", nullable = false)
+    private User creator;
 }

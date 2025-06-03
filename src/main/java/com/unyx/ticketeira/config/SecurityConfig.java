@@ -12,11 +12,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig {
-    private final JwtRequestFilter jwtRequestFilter;
-
-    public SecurityConfig(JwtRequestFilter jwtRequestFilter) {
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
+//    private final JwtRequestFilter jwtRequestFilter;
+//
+//    public SecurityConfig(JwtRequestFilter jwtRequestFilter) {
+//        this.jwtRequestFilter = jwtRequestFilter;
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,9 +27,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/ticket/**").authenticated()
                 .requestMatchers("/api/payment/**").authenticated()
                 .requestMatchers("/api/email/**").authenticated()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().authenticated();
+//                .and()
+//                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -1,12 +1,14 @@
 package com.unyx.ticketeira.application.controller;
 
-import com.unyx.ticketeira.application.dto.Auth.AuthRequest;
-import com.unyx.ticketeira.application.dto.Auth.AuthResponse;
-import com.unyx.ticketeira.application.dto.Auth.RegisterRequest;
-import com.unyx.ticketeira.application.dto.Auth.RegisterResponse;
-import com.unyx.ticketeira.domain.service.AuthService;
-import com.unyx.ticketeira.domain.model.User;
+
+import com.unyx.ticketeira.application.dto.user.LoginRequest;
+import com.unyx.ticketeira.application.dto.user.LoginResponse;
+import com.unyx.ticketeira.application.dto.user.RegisterResponse;
+import com.unyx.ticketeira.application.dto.user.RegisterRequest;
+import com.unyx.ticketeira.application.usecases.auth.LoginUserUseCase;
+import com.unyx.ticketeira.application.usecases.auth.RegisterUserUseCase;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,34 +18,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    private final RegisterUserUseCase registerUserUseCase;
+    private final LoginUserUseCase loginUserUseCase;
+
+    public AuthController(RegisterUserUseCase registerUserUseCase, LoginUserUseCase loginUserUseCase) {
+        this.registerUserUseCase = registerUserUseCase;
+        this.loginUserUseCase = loginUserUseCase;
     }
-
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request){
-        AuthResponse response = authService.login(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(response);
-    }
-
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) {
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+
+        RegisterResponse response = registerUserUseCase.execute(request);
 
 
-        User registeredUser = authService.register(user);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
-        RegisterResponse response = new RegisterResponse(
-                registeredUser.getId(),
-                registeredUser.getEmail(),
-                registeredUser.getRole().name()
-        );
-        return ResponseEntity.ok(response);
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        LoginResponse response = loginUserUseCase.execute(request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
