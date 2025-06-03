@@ -146,6 +146,15 @@ public class EventService implements IEventService {
 
     }
 
+    public Event validateAndGetEvent(String eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
+        if (!event.getIsPublished()) {
+            throw new AccessDeniedException(EVENT_ACCESS_DENIED);
+        }
+        return event;
+    }
+
 //    public void getDashboardInfo(String eventId) {
 //        SummaryProjection projection = ticketEmissionRepository.getSummaryByEventId(eventId);
 //        SummaryDTO summaryDTO = projection != null

@@ -6,6 +6,7 @@ import com.unyx.ticketeira.dto.order.OrderResponse;
 import com.unyx.ticketeira.exception.*;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
+import com.unyx.ticketeira.service.Interface.IEventService;
 import com.unyx.ticketeira.service.Interface.IOrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 
 @Service
     public class OrderService implements IOrderService {
+        @Autowired
+        private IEventService eventService;
+
         @Autowired
         private EventRepository eventRepository;
 
@@ -48,7 +52,7 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
             User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
 
-            Event event = validateEvent(request.eventId());
+            Event event = eventService.validateAndGetEvent(request.eventId());
             Coupon coupon = validateAndGetCoupon(request.coupon());
 
             // Monta os itens do pedido e valida setor/lote
@@ -99,14 +103,14 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
             );
         }
 
-        private Event validateEvent(String eventId) {
-            Event event = eventRepository.findById(eventId)
-                    .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
-            if (!event.getIsPublished()) {
-                throw new AccessDeniedException(EVENT_ACCESS_DENIED);
-            }
-            return event;
-        }
+//        private Event validateEvent(String eventId) {
+//            Event event = eventRepository.findById(eventId)
+//                    .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
+//            if (!event.getIsPublished()) {
+//                throw new AccessDeniedException(EVENT_ACCESS_DENIED);
+//            }
+//            return event;
+//        }
 
         private Coupon validateAndGetCoupon(String couponCode) {
             if (couponCode == null || couponCode.isBlank()) {
