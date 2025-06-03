@@ -9,13 +9,14 @@ import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.service.Interface.IGatewayPagamento;
 import com.unyx.ticketeira.service.Interface.IOrderService;
+import com.unyx.ticketeira.service.Interface.IPaymentService;
 import com.unyx.ticketeira.service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class PaymentService {
+public class PaymentService implements IPaymentService {
 
     @Autowired
     private IOrderService orderService;
