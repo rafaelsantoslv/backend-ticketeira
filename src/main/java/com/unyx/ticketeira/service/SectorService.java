@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.unyx.ticketeira.constant.SystemMessages.SECTOR_SUCCESS;
+
 @Service
 public class SectorService implements ISectorService {
     @Autowired
@@ -35,7 +37,7 @@ public class SectorService implements ISectorService {
                 savedSector.getName(),
                 savedSector.getCapacity(),
                 savedSector.getDescription(),
-                "Success created sector"
+                SECTOR_SUCCESS
         );
     }
 

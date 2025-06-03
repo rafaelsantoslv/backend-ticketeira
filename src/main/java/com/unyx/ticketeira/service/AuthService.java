@@ -22,6 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.unyx.ticketeira.constant.SystemMessages.*;
+
 @Service
 public class AuthService implements IAuthService {
 
@@ -38,10 +40,10 @@ public class AuthService implements IAuthService {
     private JwtUtil jwtUtil;
 
     public LoginResponse login(LoginRequest user, HttpServletResponse response) {
-        User userExists = userRepository.findByEmail(user.email()).orElseThrow(() -> new InvalidCredentialsException("User or password is incorrectT"));
+        User userExists = userRepository.findByEmail(user.email()).orElseThrow(() -> new InvalidCredentialsException(USER_ACCESS_DENIED));
         if(!PasswordUtil.matches(user.password(), userExists.getPassword())){
             System.out.println(user.password() + " + " + userExists.getPassword());
-            throw new UnauthorizedException("User or password is incorrect");
+            throw new UnauthorizedException(USER_ACCESS_DENIED);
         }
 
         String token = jwtUtil.generateToken(
@@ -61,20 +63,20 @@ public class AuthService implements IAuthService {
     }
 
     public RegisterResponse register(RegisterRequest user){
-        Role userRole = roleRepository.findByName("USER").orElseThrow(() -> new RoleNotFoundException("Role already exists"));
+        Role userRole = roleRepository.findByName("USER").orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
 
         if(userService.existsByEmail(user.email())){
-            throw new InvalidCredentialsException("Email already exists");
+            throw new InvalidCredentialsException(EMAIL_ACCESS_DENIED);
         }
         if(userService.existsByDocument(user.document())){
-            throw new UserNotFoundException("Document already exists");
+            throw new UserNotFoundException(DOCUMENT_ACCESS_DENIED);
         }
 
         User convertUser = ConvertDTO.convertUser(user, userRole);
 
         User registerUser = userRepository.save(convertUser);
 
-        return new RegisterResponse(registerUser.getId(), "Success created User");
+        return new RegisterResponse(registerUser.getId(), USER_SUCCESS);
 
     }
 
