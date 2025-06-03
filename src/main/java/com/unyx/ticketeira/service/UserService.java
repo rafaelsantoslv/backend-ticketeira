@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.unyx.ticketeira.constant.SystemMessages.USER_NOT_FOUND;
+
 @Service
 public class UserService implements IUserService {
 
@@ -59,6 +61,12 @@ public class UserService implements IUserService {
     public void delete(String id) {
         User userExists = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Id already exists"));
         userRepository.delete(userExists);
+    }
+
+    public User validateUserAndGetUser(String userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(USER_NOT_FOUND)
+        );
     }
 
 }

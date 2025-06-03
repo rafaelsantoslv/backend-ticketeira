@@ -26,4 +26,9 @@ public class CouponService implements ICouponService {
         }
         return coupon;
     }
+
+    public void markCouponAsUsed(Coupon coupon) {
+        coupon.setUsageCount(coupon.getUsageCount() + 1);
+        couponRepository.save(coupon);
+    }
 }

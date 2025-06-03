@@ -29,6 +29,9 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
         private ISectorService sectorService;
 
         @Autowired
+        private IUserService userService;
+
+        @Autowired
         private IBatchService batchService;
 
         @Autowired
@@ -37,16 +40,13 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
         @Autowired
         private OrderItemRepository orderItemRepository;
 
-        @Autowired
-        private UserRepository userRepository;
 
         @Transactional
         public OrderResponse createOrder(
                 String userId,
                 OrderRequest request
         ) {
-            User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-
+            User userExists = userService.validateUserAndGetUser(userId);
 
             Event event = eventService.validateAndGetEvent(request.eventId());
             Coupon coupon = couponService.validateAndGetCoupon(request.coupon());
@@ -76,8 +76,6 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
             order.setTotal(finalAmount);
             order.setCoupon(coupon);
 
-
-
             orderRepository.save(order);
 
             // Associa os itens ao pedido e salva
@@ -88,8 +86,7 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 
             // Atualiza uso do cupom, se houver
             if (coupon != null) {
-                coupon.setUsageCount(coupon.getUsageCount() + 1);
-                couponRepository.save(coupon);
+                couponService.markCouponAsUsed(coupon);
             }
 
             return OrderResponse.from(
