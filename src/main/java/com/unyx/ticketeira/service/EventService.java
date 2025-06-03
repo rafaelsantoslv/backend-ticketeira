@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.unyx.ticketeira.constant.SystemMessages.*;
+
 
 @Service
 public class EventService implements IEventService {
@@ -51,7 +53,7 @@ public class EventService implements IEventService {
         User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User incorrect"));
 
         if(!userExists.getRole().getName().equalsIgnoreCase("PRODUCER")) {
-            throw new UnauthorizedException("Role incorrect");
+            throw new UnauthorizedException(ROLE_NOT_FOUND);
         }
 
         UploadInfo uploadInfo = cloudflareService.generateUploadUrl();
@@ -60,7 +62,7 @@ public class EventService implements IEventService {
 
         Event addEvent = eventRepository.save(convertEvent);
 
-        return new EventCreateResponse(addEvent.getId(), uploadInfo.getUploadKey(), "Success created event");
+        return new EventCreateResponse(addEvent.getId(), uploadInfo.getUploadKey(), EVENT_SUCCESS);
     }
 
     public PaginetedResponse<EventDTO> listEventsByProducer(String userId, int page, int limit) {
@@ -113,21 +115,21 @@ public class EventService implements IEventService {
 
     public EventDetailsResponse getEventDetails(String eventId) {
 
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Evento não encontrado"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
 
         if(!event.getIsPublished()) {
-            throw new AccessDeniedException("Evento não disponível para visualização");
+            throw new AccessDeniedException(EVENT_ACCESS_DENIED);
         }
 
         List<Sector> sectors = sectorRepository.findByEventId(eventId);
         if (sectors == null || sectors.isEmpty()) {
-            throw new SectorNotFoundException("Não foi encontrado setores para esse evento");
+            throw new SectorNotFoundException(SECTOR_NOT_FOUND);
         }
 
         List<SectorDTO> sectorDTOs = sectors.stream().map(sector -> {
             List<Batch> batches = batchRepository.findBySectorIdAndIsActive(sector.getId(), true);
             if (batches == null || batches.isEmpty()) {
-                throw new BatchNotFoundException("Não foi encontrado lote para o setor: " + sector.getName());
+                throw new BatchNotFoundException( BATCH_NOT_FOUND + " " + sector.getName());
             }
             List<BatchDTO> batchDTOs = batches.stream()
                     .map(ConvertDTO::convertBatchRespToDto)

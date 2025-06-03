@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.unyx.ticketeira.constant.SystemMessages.*;
 
-    @Service
+
+@Service
     public class OrderService implements IOrderService {
         @Autowired
         private EventRepository eventRepository;
@@ -43,7 +45,7 @@ import java.util.List;
                 String userId,
                 OrderRequest request
         ) {
-            User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User incorrect"));
+            User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
 
             Event event = validateEvent(request.eventId());
@@ -99,9 +101,9 @@ import java.util.List;
 
         private Event validateEvent(String eventId) {
             Event event = eventRepository.findById(eventId)
-                    .orElseThrow(() -> new EventNotFoundException("Evento não encontrado"));
+                    .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
             if (!event.getIsPublished()) {
-                throw new AccessDeniedException("Evento não disponível para visualização");
+                throw new AccessDeniedException(EVENT_ACCESS_DENIED);
             }
             return event;
         }
@@ -111,9 +113,9 @@ import java.util.List;
                 return null;
             }
             Coupon coupon = couponRepository.findByCode(couponCode)
-                    .orElseThrow(() -> new CouponNotFoundException("Cupom não encontrado"));
+                    .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_FOUND));
             if (coupon.getUsageCount() >= coupon.getUsageLimit()) {
-                throw new CouponNotFoundException("Cupom não está mais disponível");
+                throw new CouponNotFoundException(COUPON_ACCESS_DENIED);
             }
             return coupon;
         }
@@ -121,9 +123,9 @@ import java.util.List;
         private List<OrderItem> buildOrderItems(List<OrderItemRequest> items) {
             return items.stream().map(item -> {
                 Sector sector = sectorRepository.findById(item.sectorId())
-                        .orElseThrow(() -> new SectorNotFoundException("Setor não encontrado: " + item.sectorId()));
+                        .orElseThrow(() -> new SectorNotFoundException(SECTOR_NOT_FOUND +" " + item.sectorId()));
                 Batch batch = batchRepository.findById(item.batchId())
-                        .orElseThrow(() -> new BatchNotFoundException("Lote não encontrado: " + item.batchId()));
+                        .orElseThrow(() -> new BatchNotFoundException(BATCH_NOT_FOUND + " " + item.batchId()));
 
                 return getOrderItem(item, batch, sector);
             }).toList();
@@ -131,7 +133,7 @@ import java.util.List;
 
         private static OrderItem getOrderItem(OrderItemRequest item, Batch batch, Sector sector) {
             if (!batch.getIsActive()) {
-                throw new AccessDeniedException("Lote inativo: " + item.batchId());
+                throw new AccessDeniedException( SECTOR_ACCESS_DENIED + " " + item.batchId());
             }
             BigDecimal unitPrice = batch.getPrice();
             BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(item.quantity()));
