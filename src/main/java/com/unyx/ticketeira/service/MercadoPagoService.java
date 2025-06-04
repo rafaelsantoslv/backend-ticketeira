@@ -71,36 +71,45 @@ public class MercadoPagoService implements IGatewayPagamento {
     }
 
     public CardPaymentResponse createCardPayment(CardPaymentPayload payload) throws MPException, MPApiException {
+        try {
+            PaymentCreateRequest request = PaymentCreateRequest.builder()
+                    .transactionAmount(payload.amount())
+                    .description("Pagamento de ingresso")
+                    .installments(1)
+                    .token(payload.token())
+                    .payer(PaymentPayerRequest.builder()
+                            .email(payload.email())
+                            .identification(IdentificationRequest.builder()
+                                    .type("CPF")
+                                    .number(payload.cpf()).build())
+                            .firstName(payload.firstName())
+                            .lastName(payload.firstName()) // ⚠️ Aqui pode estar errado
+                            .build())
+                    .build();
 
-        PaymentCreateRequest request = PaymentCreateRequest.builder()
-                .transactionAmount(payload.amount())
-                .description("Pagamento de ingresso")
-                .installments(1)
-                .token(payload.token())
-                .payer(PaymentPayerRequest.builder()
-                        .email(payload.email())
-                        .identification(IdentificationRequest.builder()
-                                .type("CPF")
-                                .number(payload.cpf()).build())
-                        .firstName(payload.firstName())
-                        .lastName(payload.firstName())
-                        .build())
-                .build();
+            MPRequestOptions requestOptions = MPRequestOptions.builder()
+                    .accessToken(accessToken)
+                    .build();
 
-        MPRequestOptions requestOptions = MPRequestOptions.builder()
-                .accessToken(accessToken)
-                .build();
+            Payment payment = paymentClient.create(request, requestOptions);
 
-        Payment payment = paymentClient.create(request, requestOptions);
+            return new CardPaymentResponse(
+                    payment.getStatus(),
+                    payment.getId(),
+                    payment.getTransactionAmount(),
+                    payment.getPaymentMethodId(),
+                    payment.getStatusDetail()
+            );
 
-        return new CardPaymentResponse(
-                payment.getStatus(),
-                payment.getId(),
-                payment.getTransactionAmount(),
-                payment.getPaymentMethodId(),
-                payment.getStatusDetail()
-        );
+        } catch (MPApiException e) {
+            // Aqui você loga os detalhes da resposta da API
+            System.err.println("Erro da API do MercadoPago:");
+            System.err.println("Status Code: " + e.getStatusCode());
+            System.err.println("Mensagem: " + e.getApiResponse().getContent());
+            throw e; // relança para manter a stacktrace
+        }
     }
+
 
 
 }
