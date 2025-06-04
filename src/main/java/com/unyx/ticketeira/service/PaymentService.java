@@ -39,6 +39,7 @@ public class PaymentService implements IPaymentService {
                 user.getName(),
                 cardToken
         );
+        System.out.println(payload);
 
         return gatewayPagamento.createCardPayment(payload);
     }

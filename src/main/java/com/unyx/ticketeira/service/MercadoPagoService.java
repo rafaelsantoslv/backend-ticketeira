@@ -41,7 +41,7 @@ public class MercadoPagoService implements IGatewayPagamento {
 
 
     public PixPaymentResponse createPixPayment(PixPaymentPayload payload) throws MPException, MPApiException {
-
+        System.setProperty("mercadopago.log.level", "DEBUG");
 
         PaymentCreateRequest request = PaymentCreateRequest.builder()
                 .transactionAmount(payload.amount())
@@ -74,16 +74,16 @@ public class MercadoPagoService implements IGatewayPagamento {
         try {
             PaymentCreateRequest request = PaymentCreateRequest.builder()
                     .transactionAmount(payload.amount())
+                    .token(payload.token())
+                    .paymentMethodId("visa")
                     .description("Pagamento de ingresso")
                     .installments(1)
-                    .token(payload.token())
                     .payer(PaymentPayerRequest.builder()
                             .email(payload.email())
                             .identification(IdentificationRequest.builder()
                                     .type("CPF")
-                                    .number(payload.cpf()).build())
-                            .firstName(payload.firstName())
-                            .lastName(payload.firstName()) // ⚠️ Aqui pode estar errado
+                                    .number(payload.cpf())
+                                    .build())
                             .build())
                     .build();
 
@@ -91,7 +91,17 @@ public class MercadoPagoService implements IGatewayPagamento {
                     .accessToken(accessToken)
                     .build();
 
+            System.out.println("=== DADOS RECEBIDOS ===");
+            System.out.println("Amount: " + payload.amount());
+            System.out.println("Token: " + payload.token());
+            System.out.println("Email: " + payload.email());
+            System.out.println("CPF: " + payload.cpf());
+            System.out.println("FirstName: " + payload.firstName());
+            System.out.println("Access Token: " + accessToken.substring(0, 10) + "...");
+
+            System.out.println("=== ENVIANDO REQUEST ===");
             Payment payment = paymentClient.create(request, requestOptions);
+            System.out.println("=== SUCESSO ===");
 
             return new CardPaymentResponse(
                     payment.getStatus(),
@@ -103,9 +113,10 @@ public class MercadoPagoService implements IGatewayPagamento {
 
         } catch (MPApiException e) {
             // Aqui você loga os detalhes da resposta da API
-            System.err.println("Erro da API do MercadoPago:");
+            System.err.println("=== ERRO DA API DO MERCADOPAGO ===");
             System.err.println("Status Code: " + e.getStatusCode());
             System.err.println("Mensagem: " + e.getApiResponse().getContent());
+            System.err.println("Cause: " + e.getCause());
             throw e; // relança para manter a stacktrace
         }
     }
