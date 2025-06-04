@@ -1,5 +1,7 @@
 package com.unyx.ticketeira.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercadopago.client.MercadoPagoClient;
 import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
@@ -13,12 +15,18 @@ import com.unyx.ticketeira.dto.payment.CardPaymentPayload;
 import com.unyx.ticketeira.dto.payment.CardPaymentResponse;
 import com.unyx.ticketeira.dto.payment.PixPaymentPayload;
 import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
+import com.unyx.ticketeira.exception.InvalidCardTokenException;
+import com.unyx.ticketeira.exception.PaymentConfigurationException;
+import com.unyx.ticketeira.exception.PaymentException;
+import com.unyx.ticketeira.exception.PaymentGatewayException;
 import com.unyx.ticketeira.service.Interface.IGatewayPagamento;
 import com.unyx.ticketeira.service.Interface.IOrderService;
 import com.unyx.ticketeira.service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 
 @Service
@@ -41,7 +49,7 @@ public class MercadoPagoService implements IGatewayPagamento {
 
 
     public PixPaymentResponse createPixPayment(PixPaymentPayload payload) throws MPException, MPApiException {
-        System.setProperty("mercadopago.log.level", "DEBUG");
+        validatePixPayload(payload);
 
         PaymentCreateRequest request = PaymentCreateRequest.builder()
                 .transactionAmount(payload.amount())
@@ -58,7 +66,7 @@ public class MercadoPagoService implements IGatewayPagamento {
                 .accessToken(accessToken)
                 .build();
 
-        Payment payment = paymentClient.create(request, requestOptions);
+        Payment payment = executePayment(request, requestOptions);
 
         return new PixPaymentResponse(
                 payment.getStatus(),
@@ -71,56 +79,124 @@ public class MercadoPagoService implements IGatewayPagamento {
     }
 
     public CardPaymentResponse createCardPayment(CardPaymentPayload payload) throws MPException, MPApiException {
+
+        validateCardPayload(payload);
+
+        PaymentCreateRequest request = PaymentCreateRequest.builder()
+                .transactionAmount(payload.amount())
+                .token(payload.token())
+                .paymentMethodId("visa")
+                .description("Pagamento de ingresso")
+                .installments(1)
+                .payer(PaymentPayerRequest.builder()
+                        .email(payload.email())
+                        .identification(IdentificationRequest.builder()
+                                .type("CPF")
+                                .number(payload.cpf())
+                                .build())
+                        .build())
+                .build();
+
+        MPRequestOptions requestOptions = MPRequestOptions.builder()
+                .accessToken(accessToken)
+                .build();
+
+
+        Payment payment = executePayment(request, requestOptions);
+
+        return new CardPaymentResponse(
+                payment.getStatus(),
+                payment.getId(),
+                payment.getTransactionAmount(),
+                payment.getPaymentMethodId(),
+                payment.getStatusDetail()
+        );
+
+    }
+
+    private Payment executePayment(PaymentCreateRequest request, MPRequestOptions requestOptions) {
         try {
-            PaymentCreateRequest request = PaymentCreateRequest.builder()
-                    .transactionAmount(payload.amount())
-                    .token(payload.token())
-                    .paymentMethodId("visa")
-                    .description("Pagamento de ingresso")
-                    .installments(1)
-                    .payer(PaymentPayerRequest.builder()
-                            .email(payload.email())
-                            .identification(IdentificationRequest.builder()
-                                    .type("CPF")
-                                    .number(payload.cpf())
-                                    .build())
-                            .build())
-                    .build();
-
-            MPRequestOptions requestOptions = MPRequestOptions.builder()
-                    .accessToken(accessToken)
-                    .build();
-
-            System.out.println("=== DADOS RECEBIDOS ===");
-            System.out.println("Amount: " + payload.amount());
-            System.out.println("Token: " + payload.token());
-            System.out.println("Email: " + payload.email());
-            System.out.println("CPF: " + payload.cpf());
-            System.out.println("FirstName: " + payload.firstName());
-            System.out.println("Access Token: " + accessToken.substring(0, 10) + "...");
-
-            System.out.println("=== ENVIANDO REQUEST ===");
-            Payment payment = paymentClient.create(request, requestOptions);
-            System.out.println("=== SUCESSO ===");
-
-            return new CardPaymentResponse(
-                    payment.getStatus(),
-                    payment.getId(),
-                    payment.getTransactionAmount(),
-                    payment.getPaymentMethodId(),
-                    payment.getStatusDetail()
-            );
-
+            return paymentClient.create(request, requestOptions);
         } catch (MPApiException e) {
-            // Aqui você loga os detalhes da resposta da API
-            System.err.println("=== ERRO DA API DO MERCADOPAGO ===");
-            System.err.println("Status Code: " + e.getStatusCode());
-            System.err.println("Mensagem: " + e.getApiResponse().getContent());
-            System.err.println("Cause: " + e.getCause());
-            throw e; // relança para manter a stacktrace
+            handleMPApiException(e);
+            return null; // Nunca vai chegar aqui
+        } catch (MPException e) {
+            throw new PaymentConfigurationException("Erro de configuração do MercadoPago", e);
         }
     }
 
+    private void handleMPApiException(MPApiException e) {
+        String errorMessage = e.getApiResponse().getContent();
+
+        String errorCode = extractErrorCode(errorMessage);
+        String description = extractErrorDescription(errorMessage);
+
+        switch (e.getStatusCode()) {
+            case 400:
+                if ("bin_not_found".equals(errorCode)) {
+                    throw new InvalidCardTokenException("Token do cartão inválido ou cartão não suportado", e);
+                }
+                throw new PaymentGatewayException("Dados de pagamento inválidos", e.getStatusCode(), errorCode, description, e);
+            case 401:
+                throw new PaymentConfigurationException("Token de acesso inválido", e);
+            case 500:
+                throw new PaymentGatewayException("Erro interno do gateway de pagamento", e.getStatusCode(), errorCode, description, e);
+            default:
+                throw new PaymentGatewayException("Erro no gateway de pagamento", e.getStatusCode(), errorCode, description, e);
+        }
+    }
+
+    private void validatePixPayload(PixPaymentPayload payload) {
+        if (payload.amount() == null || payload.amount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new PaymentException("Valor do pagamento deve ser maior que zero");
+        }
+        if (payload.email() == null || payload.email().trim().isEmpty()) {
+            throw new PaymentException("Email é obrigatório");
+        }
+    }
+
+    private void validateCardPayload(CardPaymentPayload payload) {
+        if (payload.amount() == null || payload.amount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new PaymentException("Valor do pagamento deve ser maior que zero");
+        }
+        if (payload.token() == null || payload.token().trim().isEmpty()) {
+            throw new InvalidCardTokenException("Token do cartão é obrigatório");
+        }
+        if (payload.email() == null || payload.email().trim().isEmpty()) {
+            throw new PaymentException("Email é obrigatório");
+        }
+        if (payload.cpf() == null || payload.cpf().trim().isEmpty()) {
+            throw new PaymentException("CPF é obrigatório");
+        }
+
+    }
+
+    private String extractErrorCode(String errorMessage) {
+        // Implementar parse do JSON para extrair o error code
+        // Exemplo: {"message":"bin_not_found","error":"bad_request"...}
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(errorMessage);
+            return jsonNode.path("message").asText();
+        } catch (Exception e) {
+            return "unknown_error";
+        }
+    }
+
+    private String extractErrorDescription(String errorMessage) {
+        // Implementar parse do JSON para extrair a descrição
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(errorMessage);
+            JsonNode causes = jsonNode.path("cause");
+            if (causes.isArray() && !causes.isEmpty()) {
+                return causes.get(0).path("description").asText();
+            }
+            return jsonNode.path("message").asText();
+        } catch (Exception e) {
+            return "Erro desconhecido";
+        }
+    }
 
 
 }
