@@ -9,6 +9,7 @@ public class SystemMessages {
     public static final String SECTOR_NOT_FOUND = "O setor informado não foi encontrado";
     public static final String COUPON_NOT_FOUND = "O cupom informado não foi encontrado";
     public static final String ROLE_NOT_FOUND = "A role informada não foi encontrada";
+    public static final String ORDER_NOT_FOUND = "A order não foi encontrada";
 
     // ACCESS DENIED
     public static final String USER_ACCESS_DENIED = "O email ou senha informado estão incorretos";
@@ -17,6 +18,8 @@ public class SystemMessages {
     public static final String EVENT_ACCESS_DENIED = "O evento informado não está disponível para visualização";
     public static final String COUPON_ACCESS_DENIED = "O cupom informado não está mais disponível";
     public static final String SECTOR_ACCESS_DENIED = "O setor informado está inativo";
+    public static final String ORDER_ACCESS_DENIED = "A order está expirada";
+
 
     // SUCCESS
     public static final String USER_SUCCESS = "Sucesso ao criar o usuário";

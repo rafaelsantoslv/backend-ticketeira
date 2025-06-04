@@ -6,7 +6,7 @@ import com.unyx.ticketeira.dto.order.OrderResponse;
 import com.unyx.ticketeira.exception.*;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
-import com.unyx.ticketeira.service.Interface.IOrderService;
+import com.unyx.ticketeira.service.Interface.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +20,19 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 @Service
     public class OrderService implements IOrderService {
         @Autowired
-        private EventRepository eventRepository;
+        private IEventService eventService;
 
         @Autowired
-        private SectorRepository sectorRepository;
+        private ICouponService couponService;
 
         @Autowired
-        private BatchRepository batchRepository;
+        private ISectorService sectorService;
 
         @Autowired
-        private CouponRepository couponRepository;
+        private IUserService userService;
+
+        @Autowired
+        private IBatchService batchService;
 
         @Autowired
         private OrderRepository orderRepository;
@@ -37,19 +40,16 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
         @Autowired
         private OrderItemRepository orderItemRepository;
 
-        @Autowired
-        private UserRepository userRepository;
 
         @Transactional
         public OrderResponse createOrder(
                 String userId,
                 OrderRequest request
         ) {
-            User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+            User userExists = userService.validateUserAndGetUser(userId);
 
-
-            Event event = validateEvent(request.eventId());
-            Coupon coupon = validateAndGetCoupon(request.coupon());
+            Event event = eventService.validateAndGetEvent(request.eventId());
+            Coupon coupon = couponService.validateAndGetCoupon(request.coupon());
 
             // Monta os itens do pedido e valida setor/lote
             List<OrderItem> orderItems = buildOrderItems(request.items());
@@ -69,14 +69,12 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 
             // Cria e salva o pedido
             Order order = new Order();
-            order.setStatus("Valido");
+            order.setStatus("PENDING");
             order.setUser(userExists);
             order.setDiscount(discount);
             order.setFees(fee);
             order.setTotal(finalAmount);
             order.setCoupon(coupon);
-
-
 
             orderRepository.save(order);
 
@@ -88,8 +86,7 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 
             // Atualiza uso do cupom, se houver
             if (coupon != null) {
-                coupon.setUsageCount(coupon.getUsageCount() + 1);
-                couponRepository.save(coupon);
+                couponService.markCouponAsUsed(coupon);
             }
 
             return OrderResponse.from(
@@ -99,50 +96,38 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
             );
         }
 
-        private Event validateEvent(String eventId) {
-            Event event = eventRepository.findById(eventId)
-                    .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
-            if (!event.getIsPublished()) {
-                throw new AccessDeniedException(EVENT_ACCESS_DENIED);
+        public Order validateOrderAndGetOrder(String orderId) {
+            Order orderExists = orderRepository.findById(orderId).orElseThrow(
+                    () -> new OrderNotFoundException(ORDER_NOT_FOUND)
+            );
+            if(!orderExists.getStatus().equals("PENDING")) {
+                throw new AccessDeniedException(ORDER_ACCESS_DENIED);
             }
-            return event;
+            return orderExists;
         }
 
-        private Coupon validateAndGetCoupon(String couponCode) {
-            if (couponCode == null || couponCode.isBlank()) {
-                return null;
-            }
-            Coupon coupon = couponRepository.findByCode(couponCode)
-                    .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_FOUND));
-            if (coupon.getUsageCount() >= coupon.getUsageLimit()) {
-                throw new CouponNotFoundException(COUPON_ACCESS_DENIED);
-            }
-            return coupon;
-        }
+
 
         private List<OrderItem> buildOrderItems(List<OrderItemRequest> items) {
             return items.stream().map(item -> {
-                Sector sector = sectorRepository.findById(item.sectorId())
-                        .orElseThrow(() -> new SectorNotFoundException(SECTOR_NOT_FOUND +" " + item.sectorId()));
-                Batch batch = batchRepository.findById(item.batchId())
-                        .orElseThrow(() -> new BatchNotFoundException(BATCH_NOT_FOUND + " " + item.batchId()));
-
-                return getOrderItem(item, batch, sector);
+                Sector sector = sectorService.validateSectorAndGetSector(item.sectorId());
+                Batch batch = batchService.validateBatchAndGetBatch(item.batchId());
+                return getOrderItem(item.quantity(), batch, sector);
             }).toList();
         }
 
-        private static OrderItem getOrderItem(OrderItemRequest item, Batch batch, Sector sector) {
+        private static OrderItem getOrderItem(int quantity, Batch batch, Sector sector) {
             if (!batch.getIsActive()) {
-                throw new AccessDeniedException( SECTOR_ACCESS_DENIED + " " + item.batchId());
+                throw new AccessDeniedException( SECTOR_ACCESS_DENIED + " " + batch.getId());
             }
             BigDecimal unitPrice = batch.getPrice();
-            BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(item.quantity()));
+            BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setSector(sector);
             orderItem.setBatch(batch);
             orderItem.setUnitPrice(unitPrice);
-            orderItem.setQuantity(item.quantity());
+            orderItem.setQuantity(quantity);
             orderItem.setSubtotal(subtotal);
 
             return orderItem;

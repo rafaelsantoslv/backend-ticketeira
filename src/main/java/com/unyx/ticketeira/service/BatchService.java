@@ -3,6 +3,7 @@ package com.unyx.ticketeira.service;
 import com.unyx.ticketeira.dto.batch.BatchCreateRequest;
 import com.unyx.ticketeira.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.dto.batch.BatchListAllBySector;
+import com.unyx.ticketeira.exception.BatchNotFoundException;
 import com.unyx.ticketeira.model.Batch;
 import com.unyx.ticketeira.model.Sector;
 import com.unyx.ticketeira.repository.BatchRepository;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.unyx.ticketeira.constant.SystemMessages.BATCH_NOT_FOUND;
 
 @Service
 public class BatchService implements IBatchService {
@@ -38,5 +41,11 @@ public class BatchService implements IBatchService {
         authorizationValidator.validateEventProducer(eventId, userId);
         List<Batch> batchList = batchRepository.findAllBySectorId(sectorId);
         return batchList.stream().map(ConvertDTO::convertBatchListToDto).toList();
+    }
+
+    public Batch validateBatchAndGetBatch(String batchId) {
+        return batchRepository.findById(batchId).orElseThrow(
+                () -> new BatchNotFoundException(BATCH_NOT_FOUND)
+        );
     }
 }

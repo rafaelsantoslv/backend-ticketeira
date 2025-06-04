@@ -10,5 +10,7 @@ public interface IUserService {
     boolean existsByEmail(String email);
     boolean existsByDocument(String document);
 
+    User validateUserAndGetUser(String userId);
+
 
 }

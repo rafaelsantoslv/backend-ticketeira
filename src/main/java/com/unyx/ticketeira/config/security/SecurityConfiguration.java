@@ -33,7 +33,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
                         .requestMatchers("/api/producers/**").hasRole("PRODUCER")
-                        .requestMatchers("/api/order/**").hasRole("USER")
+                        .requestMatchers("/api/v1/order/**").hasRole("USER")
+                        .requestMatchers("/api/v1/payment/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
