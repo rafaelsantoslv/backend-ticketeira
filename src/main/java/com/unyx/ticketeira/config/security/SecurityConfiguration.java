@@ -1,5 +1,8 @@
 package com.unyx.ticketeira.config.security;
 
+import com.unyx.ticketeira.exception.AccessDeniedException;
+import com.unyx.ticketeira.exception.CustomAccessDeniedHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,13 +34,11 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
-                        .requestMatchers("/api/producers/**").hasRole("PRODUCER")
-                        .requestMatchers("/api/v1/order/**").hasRole("USER")
-                        .requestMatchers("/api/v1/payment/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception ->
+                        exception.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
