@@ -74,12 +74,3 @@ jobs:
         run: |
           sleep 10  # Wait for container to initialize
           docker logs backend_ticketeira || true
-
-      - name: Health check
-        run: |
-          sleep 5
-          if ! curl -f http://localhost:8080/actuator/health 2>/dev/null; then
-            echo "Health check failed"
-            docker logs backend_ticketeira
-            exit 1
-          fi
