@@ -18,6 +18,7 @@ import com.unyx.ticketeira.util.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -36,6 +37,7 @@ public class EventController {
     IBatchService batchService;
 
 
+    @PreAuthorize("hasRole('PRODUCER')")
     @GetMapping
     public ResponseEntity<PaginetedResponse<EventDTO>> getEvents(
             @RequestParam(defaultValue = "0") int page,
@@ -47,10 +49,6 @@ public class EventController {
         return ResponseEntity.ok(eventService.listEventsByProducer(user.getId() ,page, limit));
     }
 
-//    @GetMapping("/{eventId}/dashboard")
-//    public void getDataDashboard(@PathVariable String eventId) {
-//        eventService.getDashboardInfo(eventId);
-//    }
 
     @PostMapping
     public ResponseEntity<EventCreateResponse> createEvent(
