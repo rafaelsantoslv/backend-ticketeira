@@ -60,15 +60,34 @@ public class EventService implements IEventService {
 
         UploadInfo uploadInfo = cloudflareService.generateUploadUrl();
 
-        Event convertEvent = ConvertDTO.convertEvent(
+        Event event = EventMapper.toModel(
                 dto,
                 uploadInfo.getObjectKey(),
                 userExists
         );
 
-        Event addEvent = eventRepository.save(convertEvent);
+        Event addEvent = eventRepository.save(event);
 
         return new EventCreateResponse(addEvent.getId(), uploadInfo.getUploadKey(), EVENT_SUCCESS);
+    }
+
+    public EventUpdateResponse updateEvent(String userId, String eventId, EventUpdateRequest dto) {
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ROLE_NOT_FOUND));
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
+
+        if (!event.getCreator().getId().equals(userId)) {
+            throw new UnauthorizedException(EVENT_ACCESS_DENIED);
+        }
+
+        EventMapper.updateModel(event, dto);
+
+        Event updatedEvent = eventRepository.save(event);
+
+        return EventMapper.toUpdateResponse(updatedEvent);
     }
 
     public PaginatedResponse<EventDTO> getEventsByProducer(String userId, int page, int limit) {
@@ -175,7 +194,6 @@ public class EventService implements IEventService {
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
     }
-
 
     private MetricsDTO buildMetrics(List<Ticket> tickets, List<Payment> payments) {
         int totalTickets = tickets.size();

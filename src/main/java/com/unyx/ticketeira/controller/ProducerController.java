@@ -4,6 +4,8 @@ import com.unyx.ticketeira.config.security.AuthenticatedUser;
 import com.unyx.ticketeira.dto.PaginatedResponse;
 import com.unyx.ticketeira.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.dto.event.EventCreateResponse;
+import com.unyx.ticketeira.dto.event.EventUpdateRequest;
+import com.unyx.ticketeira.dto.event.EventUpdateResponse;
 import com.unyx.ticketeira.dto.event.dto.EventDTO;
 import com.unyx.ticketeira.service.Interface.IEventService;
 import com.unyx.ticketeira.util.SecurityUtils;
@@ -43,4 +45,19 @@ public class ProducerController {
         return ResponseEntity.ok(eventService.createEvent(user.getId(),request));
 
     }
+
+    @PreAuthorize("hasRole('PRODUCER')")
+    @PutMapping("/events/{eventId}")
+    public ResponseEntity<EventUpdateResponse> updateEvent(
+            Authentication authentication,
+            @PathVariable String eventId,
+            @RequestBody @Valid EventUpdateRequest request) {
+        AuthenticatedUser user = SecurityUtils.getCurrentUser();
+
+        EventUpdateResponse response = eventService.updateEvent(user.getId(), eventId, request);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }

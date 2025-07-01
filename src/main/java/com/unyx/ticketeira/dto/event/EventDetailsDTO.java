@@ -23,6 +23,6 @@ public record EventDetailsDTO(
         List<CouponDTO> coupons,
         List<CourtesyDTO> courtesies,
         List<TicketDTO> tickets,
-        MetricsDTO metricsDTO
+        MetricsDTO metrics
 ) {
 }
