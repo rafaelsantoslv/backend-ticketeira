@@ -4,6 +4,7 @@ import com.unyx.ticketeira.dto.coupon.CouponDTO;
 import com.unyx.ticketeira.dto.courtesy.CourtesyDTO;
 import com.unyx.ticketeira.dto.event.EventDetailsDTO;
 import com.unyx.ticketeira.dto.sector.SectorDTO;
+import com.unyx.ticketeira.dto.ticket.TicketDTO;
 import com.unyx.ticketeira.model.Event;
 
 import java.util.List;
@@ -13,7 +14,8 @@ public class EventMapper {
             Event event,
             List<SectorDTO> sectors,
             List<CouponDTO> coupons,
-            List<CourtesyDTO> courtesies
+            List<CourtesyDTO> courtesies,
+            List<TicketDTO> tickets
     ) {
             return new EventDetailsDTO(
                      event.getId(),
@@ -28,7 +30,8 @@ public class EventMapper {
                      event.getStartDate(),
                      sectors,
                      coupons,
-                     courtesies
+                     courtesies,
+                     tickets
             );
     }
 }

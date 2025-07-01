@@ -18,7 +18,7 @@ public class TicketService implements ITicketService {
         return ticketRepository.countByBatchId(batchId);
     }
 
-    public List<Ticket> getAllTicketsByEvent(String eventId) {
+    public List<Ticket> getTicketsByEvent(String eventId) {
         return ticketRepository.findByEventId(eventId);
     }
 }

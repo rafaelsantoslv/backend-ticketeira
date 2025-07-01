@@ -21,6 +21,7 @@ public record EventDetailsDTO(
         LocalDateTime startDate,
         List<SectorDTO> sectors,
         List<CouponDTO> coupons,
-        List<CourtesyDTO> courtesies
+        List<CourtesyDTO> courtesies,
+        List<TicketDTO> tickets
 ) {
 }

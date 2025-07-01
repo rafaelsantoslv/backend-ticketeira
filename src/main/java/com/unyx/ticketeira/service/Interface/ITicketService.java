@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ITicketService {
     Long getCountByBatchId(String batchId);
-    List<Ticket> getAllTicketsByEvent(String eventId);
+    List<Ticket> getTicketsByEvent(String eventId);
 }

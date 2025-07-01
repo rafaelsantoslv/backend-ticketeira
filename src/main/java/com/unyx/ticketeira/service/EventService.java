@@ -22,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.unyx.ticketeira.constant.SystemMessages.*;
 
@@ -118,6 +120,9 @@ public class EventService implements IEventService {
         Event event = getEventById(eventId);
         List<Sector> sectors = sectorService.getSectorsByEventId(eventId);
 
+        Map<String, String> sectorIdToName = sectors.stream()
+                .collect(Collectors.toMap(Sector::getId, Sector::getName));
+
         List<SectorDTO> sectorDTOS = sectors.stream().map(sector -> {
             List<Batch> batches = batchService.getBatchesBySectorId(sector.getId());
             List<BatchDTO> batchDTOs = batches.stream().map(batch -> {
@@ -136,9 +141,13 @@ public class EventService implements IEventService {
 
         List<CourtesyDTO> courtesyDTOS = courtesies.stream().map(CourtesyMapper::toDTO).toList();
 
-        List<Ticket> tickets = ticketService.getAllTicketsByEvent(eventId);
+        List<Ticket> tickets = ticketService.getTicketsByEvent(eventId);
 
-        return EventMapper.toDto(event, sectorDTOS, couponDTOS, courtesyDTOS);
+        List<TicketDTO> ticketDTOS = tickets.stream()
+                .map(ticket -> TicketMapper.toDTO(ticket, sectorIdToName.get(ticket.getSectorId())))
+                .toList();
+
+        return EventMapper.toDto(event, sectorDTOS, couponDTOS, courtesyDTOS, ticketDTOS);
     }
 
     public Event validateAndGetEvent(String eventId) {

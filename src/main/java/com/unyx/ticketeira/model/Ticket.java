@@ -31,13 +31,17 @@ public class Ticket {
     @Column(nullable = false)
     private StatusTicket status;
 
-    private Boolean checkedIn;
+    @Enumerated(EnumType.STRING)
+    private TicketType ticketType;
 
-    private LocalDateTime checkedInAt;
+    @Column(nullable = false)
+    private String ownerName;
 
-    private String checkedInBy;
+    @Column(nullable = false)
+    private String ownerEmail;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "event_id", nullable = false)
@@ -49,8 +53,14 @@ public class Ticket {
     @Column(name = "sector_id", nullable = false)
     private String sectorId;
 
-    @Enumerated(EnumType.STRING)
-    private TicketType ticketType;
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    private Boolean checkedIn;
+
+    private LocalDateTime checkedInAt;
+
+    private String checkedInBy;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
