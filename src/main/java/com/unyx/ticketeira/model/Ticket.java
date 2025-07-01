@@ -30,6 +30,9 @@ public class Ticket {
     @Column(nullable = false)
     private StatusTicket status;
 
+    @Column(name = "event_id", nullable = false)
+    private String eventId;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
