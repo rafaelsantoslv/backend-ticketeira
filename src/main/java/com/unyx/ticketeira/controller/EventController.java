@@ -33,13 +33,13 @@ public class EventController {
 
 
 
-//    @GetMapping()
-//    public ResponseEntity<PaginatedResponse<EventDTO>> listAllPublishedEvents(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int limit
-//    ) {
-//        return ResponseEntity.ok(eventService.listAllEventsPublished(page, limit));
-//    }
+    @GetMapping()
+    public ResponseEntity<PaginatedResponse<EventDTO>> listAllPublishedEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        return ResponseEntity.ok(eventService.getEventsPublished(page, limit));
+    }
 //
 //    @GetMapping("/{eventId}")
 //    public ResponseEntity<EventDetailsResponse> getEventDetails(

@@ -31,7 +31,6 @@ public class EventService implements IEventService {
     private final TicketRepository ticketRepository;
 
 
-
     public EventCreateResponse createEvent(String userId, EventCreateRequest dto) {
         User userExists = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User incorrect"));
 
@@ -81,25 +80,28 @@ public class EventService implements IEventService {
         );
     }
 
-//    public PaginatedResponse<EventDTO> listAllEventsPublished(int page, int limit) {
-//        int pageIndex = page - 1;
-//
-//        Page<Event> eventsPublished = eventRepository.findAllByIsPublished(true, PageRequest.of(page, limit, Sort.by("startDate").ascending()));
-//
-//        List<EventDTO> eventConvertDto = eventsPublished.getContent()
-//                .stream()
-//                .map(ConvertDTO::convertEventToDto)
-//                .toList();
-//
-//        return new PaginatedResponse<>(
-//                eventConvertDto,
-//                eventsPublished.getTotalElements(),
-//                page,
-//                limit,
-//                eventsPublished.getTotalPages()
-//        );
-//
-//    }
+    public PaginatedResponse<EventDTO> getEventsPublished(int page, int limit) {
+        int pageIndex = page - 1;
+
+        Page<Event> eventsPublished = eventRepository.findAllByIsPublished(true, PageRequest.of(page, limit, Sort.by("startDate").ascending()));
+
+        List<EventDTO> eventConvertDto = eventsPublished.getContent()
+                .stream()
+                .map(event -> {
+                    long soldQuantity = ticketRepository.countByEventId(event.getId());
+                    return ConvertDTO.convertEventToDto(event, soldQuantity);
+                })
+                .toList();
+
+        return new PaginatedResponse<>(
+                eventConvertDto,
+                eventsPublished.getTotalElements(),
+                page,
+                limit,
+                eventsPublished.getTotalPages()
+        );
+
+    }
 
 //    public EventDetailsResponse getEventDetails(String eventId) {
 //
