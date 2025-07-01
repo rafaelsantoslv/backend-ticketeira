@@ -6,6 +6,7 @@ import com.unyx.ticketeira.dto.batch.BatchCreateResponse;
 import com.unyx.ticketeira.dto.batch.BatchListAllBySector;
 import com.unyx.ticketeira.dto.event.EventCreateRequest;
 import com.unyx.ticketeira.dto.event.EventCreateResponse;
+import com.unyx.ticketeira.dto.event.EventDetailsDTO;
 import com.unyx.ticketeira.dto.event.EventDetailsResponse;
 import com.unyx.ticketeira.dto.event.dto.EventDTO;
 import com.unyx.ticketeira.dto.sector.SectorCreateRequest;
@@ -38,13 +39,16 @@ public class EventController {
     ) {
         return ResponseEntity.ok(eventService.getEventsPublished(page, limit));
     }
-//
-//    @GetMapping("/{eventId}")
-//    public ResponseEntity<EventDetailsResponse> getEventDetails(
-//            @PathVariable String eventId
-//    ) {
-//        return ResponseEntity.ok(eventService.getEventDetails(eventId));
-//    }
+
+
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventDetailsDTO> getEventDetails(
+            @PathVariable String eventId
+    ) {
+        EventDetailsDTO eventDetails = eventService.getEventDetails(eventId);
+        return ResponseEntity.ok(eventDetails);
+    }
 
 
 }

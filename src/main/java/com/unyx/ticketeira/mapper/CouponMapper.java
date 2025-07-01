@@ -15,5 +15,6 @@ public class CouponMapper {
                 coupon.getUsageLimit(),
                 coupon.getCreatedAt()
         );
-    }}
+    }
 }
+

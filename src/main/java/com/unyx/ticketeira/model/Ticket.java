@@ -31,6 +31,15 @@ public class Ticket {
     @Column(nullable = false)
     private StatusTicket status;
 
+    private Boolean checkedIn;
+
+    private LocalDateTime checkedInAt;
+
+    private String checkedInBy;
+
+    @ManyToOne
+    private User user;
+
     @Column(name = "event_id", nullable = false)
     private String eventId;
 

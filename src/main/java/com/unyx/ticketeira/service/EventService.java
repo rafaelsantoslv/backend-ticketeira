@@ -8,11 +8,9 @@ import com.unyx.ticketeira.dto.event.*;
 import com.unyx.ticketeira.dto.event.dto.BatchesDTO;
 import com.unyx.ticketeira.dto.event.dto.EventDTO;
 import com.unyx.ticketeira.dto.sector.SectorDTO;
+import com.unyx.ticketeira.dto.ticket.TicketDTO;
 import com.unyx.ticketeira.exception.*;
-import com.unyx.ticketeira.mapper.BatchMapper;
-import com.unyx.ticketeira.mapper.CouponMapper;
-import com.unyx.ticketeira.mapper.CourtesyMapper;
-import com.unyx.ticketeira.mapper.SectorMapper;
+import com.unyx.ticketeira.mapper.*;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
 import com.unyx.ticketeira.service.Interface.*;
@@ -115,7 +113,7 @@ public class EventService implements IEventService {
 
     }
 
-    public void getEventDetails(String eventId) {
+    public EventDetailsDTO getEventDetails(String eventId) {
 
         Event event = getEventById(eventId);
         List<Sector> sectors = sectorService.getSectorsByEventId(eventId);
@@ -138,6 +136,9 @@ public class EventService implements IEventService {
 
         List<CourtesyDTO> courtesyDTOS = courtesies.stream().map(CourtesyMapper::toDTO).toList();
 
+        List<Ticket> tickets = ticketService.getAllTicketsByEvent(eventId);
+
+        return EventMapper.toDto(event, sectorDTOS, couponDTOS, courtesyDTOS);
     }
 
     public Event validateAndGetEvent(String eventId) {

@@ -32,13 +32,13 @@ public class SectorController {
         return ResponseEntity.ok(sectorService.createSector(eventId, user.getId(), request));
     }
 
-    @PreAuthorize("hasRole('PRODUCER')")
-    @GetMapping()
-    public ResponseEntity<List<SectorListAllByEventResponse>> getSectorsByEvent(
-            Authentication authentication,
-            @PathVariable String eventId
-    ){
-        AuthenticatedUser user = SecurityUtils.getCurrentUser();
-        return ResponseEntity.ok(sectorService.getAllSectorsByEventId(eventId, user.getId()));
-    }
+//    @PreAuthorize("hasRole('PRODUCER')")
+//    @GetMapping()
+//    public ResponseEntity<List<SectorListAllByEventResponse>> getSectorsByEvent(
+//            Authentication authentication,
+//            @PathVariable String eventId
+//    ){
+//        AuthenticatedUser user = SecurityUtils.getCurrentUser();
+//        return ResponseEntity.ok(sectorService.getAllSectorsByEventId(eventId, user.getId()));
+//    }
 }

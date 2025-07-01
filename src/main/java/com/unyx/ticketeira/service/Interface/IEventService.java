@@ -9,6 +9,7 @@ public interface IEventService {
     EventCreateResponse createEvent(String userId, EventCreateRequest dto);
     PaginatedResponse<EventDTO> getEventsByProducer(String userId, int page, int limit);
     PaginatedResponse<EventDTO> getEventsPublished(int page, int limit);
+    EventDetailsDTO getEventDetails(String eventId);
 //    EventDetailsResponse getEventDetails(String eventId);
 //    void getDashboardInfo(String eventId);
 
