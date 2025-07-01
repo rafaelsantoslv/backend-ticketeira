@@ -7,11 +7,16 @@ import com.unyx.ticketeira.dto.courtesy.CourtesyDTO;
 import com.unyx.ticketeira.dto.event.*;
 import com.unyx.ticketeira.dto.event.dto.BatchesDTO;
 import com.unyx.ticketeira.dto.event.dto.EventDTO;
+import com.unyx.ticketeira.dto.payment.PaymentMetricsDTO;
 import com.unyx.ticketeira.dto.sector.SectorDTO;
+import com.unyx.ticketeira.dto.ticket.CheckinStatusMetricsDTO;
 import com.unyx.ticketeira.dto.ticket.TicketDTO;
 import com.unyx.ticketeira.exception.*;
 import com.unyx.ticketeira.mapper.*;
 import com.unyx.ticketeira.model.*;
+import com.unyx.ticketeira.model.enums.PaymentMethod;
+import com.unyx.ticketeira.model.enums.StatusTicket;
+import com.unyx.ticketeira.model.enums.TicketType;
 import com.unyx.ticketeira.repository.*;
 import com.unyx.ticketeira.service.Interface.*;
 import com.unyx.ticketeira.util.ConvertDTO;
@@ -21,6 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +48,7 @@ public class EventService implements IEventService {
     private final ITicketService ticketService;
     private final ICouponService couponService;
     private final ICourtesyService courtesyService;
+    private final IPaymentService paymentService;
 
 
     public EventCreateResponse createEvent(String userId, EventCreateRequest dto) {
@@ -147,7 +155,11 @@ public class EventService implements IEventService {
                 .map(ticket -> TicketMapper.toDTO(ticket, sectorIdToName.get(ticket.getSectorId())))
                 .toList();
 
-        return EventMapper.toDto(event, sectorDTOS, couponDTOS, courtesyDTOS, ticketDTOS);
+        List<Payment> payments = paymentService.findByEventId(eventId);
+
+        MetricsDTO metrics = buildMetrics(tickets, payments);
+
+        return EventMapper.toDto(event, sectorDTOS, couponDTOS, courtesyDTOS, ticketDTOS, metrics);
     }
 
     public Event validateAndGetEvent(String eventId) {
@@ -162,6 +174,62 @@ public class EventService implements IEventService {
     private Event getEventById(String eventId) {
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
+    }
+
+
+    private MetricsDTO buildMetrics(List<Ticket> tickets, List<Payment> payments) {
+        int totalTickets = tickets.size();
+
+        int totalSales = (int) tickets.stream()
+                .filter(ticket -> ticket.getTicketType() == TicketType.REGULAR)
+                .count();
+
+        BigDecimal totalValue = tickets.stream()
+                .filter(ticket -> ticket.getTicketType() == TicketType.REGULAR)
+                .map(Ticket::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal averageTicket = totalSales > 0
+                ? totalValue.divide(BigDecimal.valueOf(totalSales), RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        int totalCheckins = (int) tickets.stream()
+                .filter(ticket -> ticket.getStatus() == StatusTicket.VALIDATED)
+                .count();
+
+        BigDecimal creditCard = payments.stream()
+                .filter(p -> p.getMethod() == PaymentMethod.CREDIT_CARD)
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal pix = payments.stream()
+                .filter(p -> p.getMethod() == PaymentMethod.PIX)
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalPayments = creditCard.add(pix);
+
+        int validated = (int) tickets.stream()
+                .filter(ticket -> ticket.getStatus() == StatusTicket.VALIDATED)
+                .count();
+        int pending = (int) tickets.stream()
+                .filter(ticket -> ticket.getStatus() == StatusTicket.PENDING)
+                .count();
+        int cancelled = (int) tickets.stream()
+                .filter(ticket -> ticket.getStatus() == StatusTicket.CANCELLED)
+                .count();
+
+        int checkinTotal = validated + pending + cancelled;
+
+        return new MetricsDTO(
+                totalSales,
+                totalTickets,
+                averageTicket,
+                totalCheckins,
+                totalValue,
+                new PaymentMetricsDTO(creditCard, pix, totalPayments),
+                new CheckinStatusMetricsDTO(checkinTotal, validated, pending, cancelled)
+        );
     }
 
 

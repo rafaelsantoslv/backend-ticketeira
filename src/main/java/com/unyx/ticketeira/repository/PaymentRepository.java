@@ -40,4 +40,7 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
       ORDER BY m.method;
 """, nativeQuery = true)
     List<PaymentMethodSummaryProjection> getPaymentSummaryByMethod(@Param("eventId") String eventId);
+
+    @Query("SELECT p FROM Payment p WHERE p.order.eventId = :eventId")
+    List<Payment> findByEventId(@Param("eventId") String eventId);
 }

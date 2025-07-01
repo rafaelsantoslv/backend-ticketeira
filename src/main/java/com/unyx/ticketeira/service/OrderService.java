@@ -8,6 +8,7 @@ import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
 import com.unyx.ticketeira.service.Interface.*;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,84 +18,85 @@ import java.util.List;
 import static com.unyx.ticketeira.constant.SystemMessages.*;
 
 
+@AllArgsConstructor
 @Service
     public class OrderService implements IOrderService {
-        @Autowired
-        private IEventService eventService;
 
-        @Autowired
-        private ICouponService couponService;
-
-        @Autowired
-        private ISectorService sectorService;
-
-        @Autowired
-        private IUserService userService;
-
-        @Autowired
-        private IBatchService batchService;
-
-        @Autowired
-        private OrderRepository orderRepository;
-
-        @Autowired
-        private OrderItemRepository orderItemRepository;
+//        private final IEventService eventService;
 
 
-        @Transactional
-        public OrderResponse createOrder(
-                String userId,
-                OrderRequest request
-        ) {
-            User userExists = userService.validateUserAndGetUser(userId);
+        private final ICouponService couponService;
 
-            Event event = eventService.validateAndGetEvent(request.eventId());
-            Coupon coupon = couponService.validateAndGetCoupon(request.coupon());
 
-            // Monta os itens do pedido e valida setor/lote
-            List<OrderItem> orderItems = buildOrderItems(request.items());
+        private final ISectorService sectorService;
 
-            // Calcula o total antes do desconto
-            BigDecimal totalBeforeDiscount = calculateTotal(orderItems);
 
-            // Calcula desconto
-            BigDecimal discount = calculateDiscount(totalBeforeDiscount, coupon);
+        private final IUserService userService;
 
-            BigDecimal totalAfterDiscount = totalBeforeDiscount.subtract(discount);
 
-            // Taxa da plataforma (10%)
-            BigDecimal fee = totalAfterDiscount.multiply(BigDecimal.valueOf(0.10));
+        private final IBatchService batchService;
 
-            BigDecimal finalAmount = totalAfterDiscount.add(fee);
 
-            // Cria e salva o pedido
-            Order order = new Order();
-            order.setStatus("PENDING");
-            order.setUser(userExists);
-            order.setDiscount(discount);
-            order.setFees(fee);
-            order.setTotal(finalAmount);
-            order.setCoupon(coupon);
+        private final OrderRepository orderRepository;
 
-            orderRepository.save(order);
 
-            // Associa os itens ao pedido e salva
-            for (OrderItem item : orderItems) {
-                item.setOrder(order);
-            }
-            orderItemRepository.saveAll(orderItems);
+        private final OrderItemRepository orderItemRepository;
 
-            // Atualiza uso do cupom, se houver
-            if (coupon != null) {
-                couponService.markCouponAsUsed(coupon);
-            }
 
-            return OrderResponse.from(
-                    order.getTotal(),
-                    order.getFees(),
-                    order.getId()
-            );
-        }
+//        @Transactional
+//        public OrderResponse createOrder(
+//                String userId,
+//                OrderRequest request
+//        ) {
+//            User userExists = userService.validateUserAndGetUser(userId);
+//
+//            Event event = eventService.validateAndGetEvent(request.eventId());
+//            Coupon coupon = couponService.validateAndGetCoupon(request.coupon());
+//
+//            // Monta os itens do pedido e valida setor/lote
+//            List<OrderItem> orderItems = buildOrderItems(request.items());
+//
+//            // Calcula o total antes do desconto
+//            BigDecimal totalBeforeDiscount = calculateTotal(orderItems);
+//
+//            // Calcula desconto
+//            BigDecimal discount = calculateDiscount(totalBeforeDiscount, coupon);
+//
+//            BigDecimal totalAfterDiscount = totalBeforeDiscount.subtract(discount);
+//
+//            // Taxa da plataforma (10%)
+//            BigDecimal fee = totalAfterDiscount.multiply(BigDecimal.valueOf(0.10));
+//
+//            BigDecimal finalAmount = totalAfterDiscount.add(fee);
+//
+//            // Cria e salva o pedido
+//            Order order = new Order();
+//            order.setStatus("PENDING");
+//            order.setUser(userExists);
+//            order.setDiscount(discount);
+//            order.setFees(fee);
+//            order.setTotal(finalAmount);
+//            order.setCoupon(coupon);
+//
+//            orderRepository.save(order);
+//
+//            // Associa os itens ao pedido e salva
+//            for (OrderItem item : orderItems) {
+//                item.setOrder(order);
+//            }
+//            orderItemRepository.saveAll(orderItems);
+//
+//            // Atualiza uso do cupom, se houver
+//            if (coupon != null) {
+//                couponService.markCouponAsUsed(coupon);
+//            }
+//
+//            return OrderResponse.from(
+//                    order.getTotal(),
+//                    order.getFees(),
+//                    order.getId()
+//            );
+//        }
 
         public Order validateOrderAndGetOrder(String orderId) {
             Order orderExists = orderRepository.findById(orderId).orElseThrow(

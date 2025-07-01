@@ -42,6 +42,9 @@ public class Order {
 
     private String notes;
 
+    @Column(name = "event_id", nullable = false)
+    private String eventId;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

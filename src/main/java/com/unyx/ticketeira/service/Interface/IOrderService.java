@@ -6,6 +6,6 @@ import com.unyx.ticketeira.model.Order;
 
 
 public interface IOrderService {
-    OrderResponse createOrder(String userId, OrderRequest request);
+//    OrderResponse createOrder(String userId, OrderRequest request);
     Order validateOrderAndGetOrder(String orderId);
 }

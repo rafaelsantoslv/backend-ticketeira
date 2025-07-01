@@ -3,6 +3,7 @@ package com.unyx.ticketeira.mapper;
 import com.unyx.ticketeira.dto.coupon.CouponDTO;
 import com.unyx.ticketeira.dto.courtesy.CourtesyDTO;
 import com.unyx.ticketeira.dto.event.EventDetailsDTO;
+import com.unyx.ticketeira.dto.event.MetricsDTO;
 import com.unyx.ticketeira.dto.sector.SectorDTO;
 import com.unyx.ticketeira.dto.ticket.TicketDTO;
 import com.unyx.ticketeira.model.Event;
@@ -15,7 +16,8 @@ public class EventMapper {
             List<SectorDTO> sectors,
             List<CouponDTO> coupons,
             List<CourtesyDTO> courtesies,
-            List<TicketDTO> tickets
+            List<TicketDTO> tickets,
+            MetricsDTO metricsDTO
     ) {
             return new EventDetailsDTO(
                      event.getId(),
@@ -31,7 +33,8 @@ public class EventMapper {
                      sectors,
                      coupons,
                      courtesies,
-                     tickets
+                     tickets,
+                     metricsDTO
             );
     }
 }

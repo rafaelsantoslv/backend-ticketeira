@@ -28,6 +28,7 @@ public class Ticket {
     @JoinColumn(name = "order_item_id", nullable = false)
     private OrderItem orderItem;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusTicket status;
 
