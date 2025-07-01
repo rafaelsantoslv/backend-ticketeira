@@ -1,6 +1,7 @@
 package com.unyx.ticketeira.model;
 
 import com.unyx.ticketeira.model.enums.StatusTicket;
+import com.unyx.ticketeira.model.enums.TicketType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,15 @@ public class Ticket {
 
     @Column(name = "event_id", nullable = false)
     private String eventId;
+
+    @Column(name = "batch_id", nullable = false)
+    private String batchId;
+
+    @Column(name = "sector_id", nullable = false)
+    private String sectorId;
+
+    @Enumerated(EnumType.STRING)
+    private TicketType ticketType;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

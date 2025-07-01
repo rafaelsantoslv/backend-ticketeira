@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, String> {
     long countByEventId(String eventId);
+    long countByBatchId(String batchId);
 
 }

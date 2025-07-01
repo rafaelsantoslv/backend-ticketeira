@@ -54,4 +54,9 @@ public class SectorService implements ISectorService {
                 () -> new SectorNotFoundException(SECTOR_NOT_FOUND)
         );
     }
+
+    public List<Sector> getSectorsByEventId(String eventId){
+        return sectorRepository.findAllByEventId(eventId);
+    }
+
 }

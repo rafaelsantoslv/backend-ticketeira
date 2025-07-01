@@ -31,8 +31,6 @@ public class EventController {
     @Autowired
     private IEventService eventService;
 
-
-
     @GetMapping()
     public ResponseEntity<PaginatedResponse<EventDTO>> listAllPublishedEvents(
             @RequestParam(defaultValue = "0") int page,

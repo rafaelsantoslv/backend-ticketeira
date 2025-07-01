@@ -2,13 +2,20 @@ package com.unyx.ticketeira.service;
 
 import com.unyx.ticketeira.dto.PaginatedResponse;
 import com.unyx.ticketeira.dto.batch.BatchDTO;
+import com.unyx.ticketeira.dto.coupon.CouponDTO;
+import com.unyx.ticketeira.dto.courtesy.CourtesyDTO;
 import com.unyx.ticketeira.dto.event.*;
+import com.unyx.ticketeira.dto.event.dto.BatchesDTO;
 import com.unyx.ticketeira.dto.event.dto.EventDTO;
 import com.unyx.ticketeira.dto.sector.SectorDTO;
 import com.unyx.ticketeira.exception.*;
+import com.unyx.ticketeira.mapper.BatchMapper;
+import com.unyx.ticketeira.mapper.CouponMapper;
+import com.unyx.ticketeira.mapper.CourtesyMapper;
+import com.unyx.ticketeira.mapper.SectorMapper;
 import com.unyx.ticketeira.model.*;
 import com.unyx.ticketeira.repository.*;
-import com.unyx.ticketeira.service.Interface.IEventService;
+import com.unyx.ticketeira.service.Interface.*;
 import com.unyx.ticketeira.util.ConvertDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +36,11 @@ public class EventService implements IEventService {
     private final UserRepository userRepository;
     private final CloudflareService cloudflareService;
     private final TicketRepository ticketRepository;
+    private final ISectorService sectorService;
+    private final IBatchService batchService;
+    private final ITicketService ticketService;
+    private final ICouponService couponService;
+    private final ICourtesyService courtesyService;
 
 
     public EventCreateResponse createEvent(String userId, EventCreateRequest dto) {
@@ -103,38 +115,30 @@ public class EventService implements IEventService {
 
     }
 
-//    public EventDetailsResponse getEventDetails(String eventId) {
-//
-//        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
-//
-//        if(!event.getIsPublished()) {
-//            throw new AccessDeniedException(EVENT_ACCESS_DENIED);
-//        }
-//
-//        List<Sector> sectors = sectorRepository.findByEventId(eventId);
-//        if (sectors == null || sectors.isEmpty()) {
-//            throw new SectorNotFoundException(SECTOR_NOT_FOUND);
-//        }
-//
-//        List<SectorDTO> sectorDTOs = sectors.stream().map(sector -> {
-//            List<Batch> batches = batchRepository.findBySectorIdAndIsActive(sector.getId(), true);
-//            if (batches == null || batches.isEmpty()) {
-//                throw new BatchNotFoundException( BATCH_NOT_FOUND + " " + sector.getName());
-//            }
-//            List<BatchDTO> batchDTOs = batches.stream()
-//                    .map(ConvertDTO::convertBatchRespToDto)
-//                    .toList();
-//            return ConvertDTO.convertSectorRespToDto(sector, batchDTOs);
-//        }).toList();
-//
-//        EventDTO eventConvert = ConvertDTO.convertEventToDto(event);
-//
-//        return new EventDetailsResponse(
-//                eventConvert,
-//                sectorDTOs
-//        );
-//
-//    }
+    public void getEventDetails(String eventId) {
+
+        Event event = getEventById(eventId);
+        List<Sector> sectors = sectorService.getSectorsByEventId(eventId);
+
+        List<SectorDTO> sectorDTOS = sectors.stream().map(sector -> {
+            List<Batch> batches = batchService.getBatchesBySectorId(sector.getId());
+            List<BatchDTO> batchDTOs = batches.stream().map(batch -> {
+                long sold = ticketService.getCountByBatchId(batch.getId());
+                return BatchMapper.toDTO(batch, sold);
+            }).toList();
+
+            return SectorMapper.toDTO(sector, batchDTOs);
+        }).toList();
+
+        List<Coupon> coupons = couponService.getCouponsByEventId(eventId);
+
+        List<CouponDTO> couponDTOS = coupons.stream().map(CouponMapper::toDTO).toList();
+
+        List<Courtesy> courtesies = courtesyService.getCourtesiesByEventId(eventId);
+
+        List<CourtesyDTO> courtesyDTOS = courtesies.stream().map(CourtesyMapper::toDTO).toList();
+
+    }
 
     public Event validateAndGetEvent(String eventId) {
         Event event = eventRepository.findById(eventId)
@@ -143,6 +147,11 @@ public class EventService implements IEventService {
             throw new AccessDeniedException(EVENT_ACCESS_DENIED);
         }
         return event;
+    }
+
+    private Event getEventById(String eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND));
     }
 
 

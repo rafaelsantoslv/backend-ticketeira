@@ -43,6 +43,10 @@ public class BatchService implements IBatchService {
         return batchList.stream().map(ConvertDTO::convertBatchListToDto).toList();
     }
 
+    public List<Batch> getBatchesBySectorId(String sectorId) {
+        return batchRepository.findAllBySectorId(sectorId);
+    }
+
     public Batch validateBatchAndGetBatch(String batchId) {
         return batchRepository.findById(batchId).orElseThrow(
                 () -> new BatchNotFoundException(BATCH_NOT_FOUND)

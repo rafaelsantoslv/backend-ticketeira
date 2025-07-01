@@ -39,6 +39,6 @@ public class SectorController {
             @PathVariable String eventId
     ){
         AuthenticatedUser user = SecurityUtils.getCurrentUser();
-        return ResponseEntity.ok(sectorService.listAllSectors(eventId, user.getId()));
+        return ResponseEntity.ok(sectorService.getAllSectorsByEventId(eventId, user.getId()));
     }
 }

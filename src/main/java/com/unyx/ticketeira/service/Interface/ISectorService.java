@@ -11,4 +11,5 @@ public interface ISectorService {
     SectorCreateResponse createSector(String eventId, String userId, SectorCreateRequest dto);
     List<SectorListAllByEventResponse> listAllSectors(String eventId, String userId);
     Sector validateSectorAndGetSector(String sectorId);
+    List<Sector> getSectorsByEventId(String eventId);
 }

@@ -10,6 +10,7 @@ import java.util.List;
 public interface IBatchService {
     BatchCreateResponse createBatch(String eventId, String sectorId, String userId, BatchCreateRequest dto);
     List<BatchListAllBySector> listAllBatchByEvent(String eventId, String sectorId, String userId);
+    List<Batch> getBatchesBySectorId(String sectorId);
 
     Batch validateBatchAndGetBatch(String batchId);
 }
