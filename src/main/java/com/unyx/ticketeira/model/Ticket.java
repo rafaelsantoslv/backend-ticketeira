@@ -1,6 +1,7 @@
 package com.unyx.ticketeira.model;
 
 import com.unyx.ticketeira.model.enums.StatusTicket;
+import com.unyx.ticketeira.model.enums.TicketType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +28,40 @@ public class Ticket {
     @JoinColumn(name = "order_item_id", nullable = false)
     private OrderItem orderItem;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusTicket status;
+
+    @Enumerated(EnumType.STRING)
+    private TicketType ticketType;
+
+    @Column(nullable = false)
+    private String ownerName;
+
+    @Column(nullable = false)
+    private String ownerEmail;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "event_id", nullable = false)
+    private String eventId;
+
+    @Column(name = "batch_id", nullable = false)
+    private String batchId;
+
+    @Column(name = "sector_id", nullable = false)
+    private String sectorId;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    private Boolean checkedIn;
+
+    private LocalDateTime checkedInAt;
+
+    private String checkedInBy;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

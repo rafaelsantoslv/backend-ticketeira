@@ -7,6 +7,8 @@ import com.unyx.ticketeira.service.Interface.ICouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.unyx.ticketeira.constant.SystemMessages.COUPON_ACCESS_DENIED;
 import static com.unyx.ticketeira.constant.SystemMessages.COUPON_NOT_FOUND;
 
@@ -30,5 +32,9 @@ public class CouponService implements ICouponService {
     public void markCouponAsUsed(Coupon coupon) {
         coupon.setUsageCount(coupon.getUsageCount() + 1);
         couponRepository.save(coupon);
+    }
+
+    public List<Coupon> getCouponsByEventId(String eventId) {
+        return couponRepository.findByEventId(eventId);
     }
 }

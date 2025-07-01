@@ -6,6 +6,9 @@ public record BatchDTO(
         String id,
         String name,
         BigDecimal price,
-        Boolean isActive
+        long quantity,
+        long sold,
+        Boolean active
 ) {
+
 }

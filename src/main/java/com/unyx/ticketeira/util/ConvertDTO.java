@@ -117,43 +117,40 @@ public class ConvertDTO {
         );
    }
 
-    public static EventDTO convertEventToDto(Event event) {
+    public static EventDTO convertEventToDto(Event event, long soldQuantity) {
         return new EventDTO(
                 event.getId(),
                 event.getTitle(),
-                event.getDescription(),
-                event.getAgeRating(),
                 event.getLocationName(),
                 event.getLocationCity(),
-                event.getLocationAddress(),
                 event.getLocationState(),
-                event.getLocationZip(),
                 event.getCategory(),
                 event.getImageUrl(),
                 event.getIsPublished(),
                 event.getIsFeatured(),
                 event.getStartDate(),
-                event.getEndDate()
+                soldQuantity
+
         );
     }
 
-    public static BatchDTO convertBatchRespToDto(Batch batch) {
-        return new BatchDTO(
-                batch.getId(),
-                batch.getName(),
-                batch.getPrice(),
-                batch.getIsActive()
-        );
-    }
+//    public static BatchDTO convertBatchRespToDto(Batch batch) {
+//        return new BatchDTO(
+//                batch.getId(),
+//                batch.getName(),
+//                batch.getPrice(),
+//                batch.getIsActive()
+//        );
+//    }
 
-    public static SectorDTO convertSectorRespToDto(Sector sector, List<BatchDTO> batchDTOs) {
-        return new SectorDTO(
-            sector.getId(),
-            sector.getName(),
-            sector.getDescription(),
-            batchDTOs
-        );
-    }
+//    public static SectorDTO convertSectorRespToDto(Sector sector, List<BatchDTO> batchDTOs) {
+//        return new SectorDTO(
+//            sector.getId(),
+//            sector.getName(),
+//            sector.getDescription(),
+//            batchDTOs
+//        );
+//    }
 
 
 

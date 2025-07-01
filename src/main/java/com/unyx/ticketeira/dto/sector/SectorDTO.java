@@ -7,7 +7,7 @@ import java.util.List;
 public record SectorDTO(
         String id,
         String name,
-        String description,
+        int capacity,
         List<BatchDTO> batches
 ) {
 }

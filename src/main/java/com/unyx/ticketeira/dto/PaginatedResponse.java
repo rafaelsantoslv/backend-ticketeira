@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PaginetedResponse<T> {
+public class PaginatedResponse<T> {
     private List<T> data;
     private long total;
     private int page;

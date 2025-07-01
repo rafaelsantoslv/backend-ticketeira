@@ -7,25 +7,29 @@ import com.unyx.ticketeira.dto.payment.CardPaymentResponse;
 import com.unyx.ticketeira.dto.payment.PixPaymentPayload;
 import com.unyx.ticketeira.dto.payment.PixPaymentResponse;
 import com.unyx.ticketeira.model.*;
+import com.unyx.ticketeira.repository.PaymentRepository;
 import com.unyx.ticketeira.service.Interface.IGatewayPagamento;
 import com.unyx.ticketeira.service.Interface.IOrderService;
 import com.unyx.ticketeira.service.Interface.IPaymentService;
 import com.unyx.ticketeira.service.Interface.IUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
+
+@AllArgsConstructor
 @Service
 public class PaymentService implements IPaymentService {
 
-    @Autowired
-    private IOrderService orderService;
+    private final IOrderService orderService;
 
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
 
-    @Autowired
-    private IGatewayPagamento gatewayPagamento;
+    private final IGatewayPagamento gatewayPagamento;
+
+    private final PaymentRepository paymentRepository;
 
     public CardPaymentResponse processCardPayment(String orderId, String userId, String cardToken) throws MPException, MPApiException {
         Order order = orderService.validateOrderAndGetOrder(orderId);
@@ -57,5 +61,9 @@ public class PaymentService implements IPaymentService {
                 ("pagamento da order " + order.getId())
         );
         return  gatewayPagamento.createPixPayment(payload);
+    }
+
+    public List<Payment> findByEventId(String eventId) {
+        return paymentRepository.findByEventId(eventId);
     }
 }
