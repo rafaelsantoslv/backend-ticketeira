@@ -30,7 +30,7 @@ public class ProducerController {
         AuthenticatedUser user = SecurityUtils.getCurrentUser();
 
 
-        return ResponseEntity.ok(eventService.listEventsByProducer(user.getId() ,page, limit));
+        return ResponseEntity.ok(eventService.getEventsByProducer(user.getId() ,page, limit));
     }
 
     @PreAuthorize("hasRole('PRODUCER')")

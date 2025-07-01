@@ -25,8 +25,6 @@ import static com.unyx.ticketeira.constant.SystemMessages.*;
 @Service
 public class EventService implements IEventService {
 
-    private final SectorRepository sectorRepository;
-    private final BatchRepository batchRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CloudflareService cloudflareService;
@@ -54,7 +52,7 @@ public class EventService implements IEventService {
         return new EventCreateResponse(addEvent.getId(), uploadInfo.getUploadKey(), EVENT_SUCCESS);
     }
 
-    public PaginatedResponse<EventDTO> listEventsByProducer(String userId, int page, int limit) {
+    public PaginatedResponse<EventDTO> getEventsByProducer(String userId, int page, int limit) {
         int pageIndex = page - 1;
 
         Page<Event> eventPage = eventRepository.findAllByCreatorId(userId, PageRequest.of(page, limit));
